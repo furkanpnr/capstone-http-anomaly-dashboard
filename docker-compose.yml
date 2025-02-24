@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: anomaly-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - anomaly_postgres_data:/var/lib/postgresql/data
+    networks:
+      - anomaly_network
+
+  dashboard:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anomaly-dashboard
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      CORS_ALLOW_ALL_ORIGINS: ${CORS_ALLOW_ALL_ORIGINS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+      USE_POSTGRES: ${USE_POSTGRES}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    command: >
+      sh -c "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 http_anomaly_detector.wsgi:application"
+    depends_on:
+      - postgres
+    volumes:
+      - anomaly_static_data:/app/staticfiles
+    networks:
+      - anomaly_network
+
+volumes:
+  anomaly_postgres_data:
+  anomaly_static_data:
+
+networks:
+  anomaly_network:

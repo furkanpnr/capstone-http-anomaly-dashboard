@@ -1,0 +1,73 @@
+<!-- Sidebar -->
+<nav id="sidebar" class="sidebar">
+    <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Gösterge Paneli
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'graphs' %}active{% endif %}" href="#">
+                    <i class="fas fa-chart-line"></i>
+                    Anomali Grafikleri
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'anomalies' %}active{% endif %}" href="#">
+                    <i class="fas fa-bug"></i>
+                    Tespit Edilen Anomaliler
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'traffic' %}active{% endif %}" href="#">
+                    <i class="fas fa-network-wired"></i>
+                    HTTP Trafiği
+                </a>
+            </li>
+        </ul>
+        
+        <h6 class="sidebar-heading terminal-text">
+            <span>RAPORLAR</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'daily_report' %}active{% endif %}" href="#">
+                    <i class="fas fa-file-code"></i>
+                    Günlük Rapor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'weekly_report' %}active{% endif %}" href="#">
+                    <i class="fas fa-file-code"></i>
+                    Haftalık Rapor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'monthly_report' %}active{% endif %}" href="#">
+                    <i class="fas fa-file-code"></i>
+                    Aylık Rapor
+                </a>
+            </li>
+        </ul>
+        
+        <h6 class="sidebar-heading terminal-text">
+            <span>AYARLAR</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'settings' %}active{% endif %}" href="#">
+                    <i class="fas fa-cog"></i>
+                    Genel Ayarlar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_menu == 'user_settings' %}active{% endif %}" href="#">
+                    <i class="fas fa-user-shield"></i>
+                    Kullanıcı Ayarları
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav> 

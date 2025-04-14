@@ -9,19 +9,19 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'graphs' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'graphs' %}active{% endif %}" href="{% url 'graphs' %}">
                     <i class="fas fa-chart-line"></i>
                     Anomali Grafikleri
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'anomalies' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'anomalies' %}active{% endif %}" href="{% url 'anomalies' %}">
                     <i class="fas fa-bug"></i>
                     Tespit Edilen Anomaliler
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'traffic' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'traffic' %}active{% endif %}" href="{% url 'traffic' %}">
                     <i class="fas fa-network-wired"></i>
                     HTTP Trafiği
                 </a>
@@ -33,19 +33,19 @@
         </h6>
         <ul class="nav flex-column mb-2">
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'daily_report' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'daily_report' %}active{% endif %}" href="{% url 'daily_report' %}">
                     <i class="fas fa-file-code"></i>
                     Günlük Rapor
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'weekly_report' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'weekly_report' %}active{% endif %}" href="{% url 'weekly_report' %}">
                     <i class="fas fa-file-code"></i>
                     Haftalık Rapor
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'monthly_report' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'monthly_report' %}active{% endif %}" href="{% url 'monthly_report' %}">
                     <i class="fas fa-file-code"></i>
                     Aylık Rapor
                 </a>
@@ -57,13 +57,13 @@
         </h6>
         <ul class="nav flex-column mb-2">
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'settings' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'settings' %}active{% endif %}" href="{% url 'settings' %}">
                     <i class="fas fa-cog"></i>
                     Genel Ayarlar
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_menu == 'user_settings' %}active{% endif %}" href="#">
+                <a class="nav-link {% if active_menu == 'user_settings' %}active{% endif %}" href="{% url 'user_settings' %}">
                     <i class="fas fa-user-shield"></i>
                     Kullanıcı Ayarları
                 </a>

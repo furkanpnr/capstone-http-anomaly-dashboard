@@ -7,8 +7,8 @@
 <body>
     {% include 'dashboard/partials/navbar.html' %}
 
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid d-flex flex-column flex-grow-1">
+        <div class="row flex-grow-1">
             {% include 'dashboard/partials/sidebar.html' with active_menu=active_menu %}
             
             <!-- Ana İçerik -->
@@ -17,6 +17,8 @@
             </main>
         </div>
     </div>
+    
+    {% include 'dashboard/partials/footer.html' %}
     
     {% include 'dashboard/partials/scripts.html' %}
 </body>

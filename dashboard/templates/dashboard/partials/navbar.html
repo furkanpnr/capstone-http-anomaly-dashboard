@@ -1,13 +1,15 @@
 <!-- Navbar -->
-<nav class="navbar navbar-dark fixed-top">
+<nav class="navbar navbar-dark fixed-top shadow-sm">
     <div class="container-fluid">
         <div class="d-flex align-items-center">
             <button id="sidebarCollapseBtn" class="btn">
                 <i class="fas fa-bars"></i>
             </button>
-            <a class="navbar-brand ms-3" href="#">
-                <i class="fas fa-shield-virus"></i>
-                HTTP_ANOMALY_DETECTOR
+            <a class="clickable-card" href="{% url 'home' %}">
+                <div class="navbar-brand ms-3">
+                    <i class="fas fa-shield-virus"></i>
+                    <span style="border-bottom: none; text-decoration: none;">HTTP_ANOMALY_DETECTOR</span>
+                </div>
             </a>
         </div>
         <div class="d-flex align-items-center">

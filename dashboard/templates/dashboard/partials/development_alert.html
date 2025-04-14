@@ -1,0 +1,15 @@
+{% comment %}
+Geliştirme mesajı için ortak template
+Kullanım:
+{% include 'dashboard/partials/development_alert.html' with message="Özel mesaj" %}
+Eğer özel mesaj belirtilmezse varsayılan mesaj görüntülenir
+{% endcomment %}
+
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    {% if message %}
+        {{ message }}
+    {% else %}
+        Bu sayfa geliştirme aşamasındadır. İçerikler yakında burada gösterilecektir.
+    {% endif %}
+</div> 

@@ -1,9 +1,212 @@
 {% extends 'dashboard/base.html' %}
 
 {% block content %}
-<!-- Tüm içerik kaldırıldı, sadece boş bir sayfa kalacak -->
+<div class="dashboard-container">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>HTTP İstek Analizi</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="requestChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Tespit Edilen Anomaliler</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="anomalyChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Son Anomali Kayıtları</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>IP Adresi</th>
+                                    <th>Method</th>
+                                    <th>Endpoint</th>
+                                    <th>Durum</th>
+                                    <th>Tarih</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>192.168.1.105</td>
+                                    <td>POST</td>
+                                    <td>/api/users</td>
+                                    <td><span class="badge bg-danger">Anomali</span></td>
+                                    <td>10.08.2023 14:25</td>
+                                </tr>
+                                <tr>
+                                    <td>192.168.1.108</td>
+                                    <td>GET</td>
+                                    <td>/admin/config</td>
+                                    <td><span class="badge bg-danger">Anomali</span></td>
+                                    <td>10.08.2023 13:05</td>
+                                </tr>
+                                <tr>
+                                    <td>192.168.1.110</td>
+                                    <td>GET</td>
+                                    <td>/api/products</td>
+                                    <td><span class="badge bg-success">Normal</span></td>
+                                    <td>10.08.2023 12:45</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-shield-alt me-2"></i>Güvenlik Durumu</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="fas fa-exclamation-circle text-warning fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Orta Seviye Tehdit</h6>
+                            <small class="text-muted">Son 24 saat içinde</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Normal İstekler</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Şüpheli İstekler</span>
+                        <span>15%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 15%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- JavaScript kodları kaldırıldı -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // HTTP İstek grafiği
+        const requestCtx = document.getElementById('requestChart').getContext('2d');
+        new Chart(requestCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                datasets: [{
+                    label: 'İstekler',
+                    data: Array.from({length: 24}, () => Math.floor(Math.random() * 80) + 20),
+                    borderColor: '#0f62fe',
+                    backgroundColor: 'rgba(15, 98, 254, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Anomali grafiği
+        const anomalyCtx = document.getElementById('anomalyChart').getContext('2d');
+        new Chart(anomalyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'Command Injection', 'DoS'],
+                datasets: [{
+                    label: 'Tespit Sayısı',
+                    data: [12, 19, 8, 5, 14],
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.7)',  // Danger
+                        'rgba(255, 193, 7, 0.7)',  // Warning
+                        'rgba(13, 110, 253, 0.7)', // Primary
+                        'rgba(108, 117, 125, 0.7)', // Secondary
+                        'rgba(220, 53, 69, 0.7)'   // Danger
+                    ],
+                    borderColor: [
+                        'rgb(220, 53, 69)',
+                        'rgb(255, 193, 7)',
+                        'rgb(13, 110, 253)',
+                        'rgb(108, 117, 125)',
+                        'rgb(220, 53, 69)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %} 

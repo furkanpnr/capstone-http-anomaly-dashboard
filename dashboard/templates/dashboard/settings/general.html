@@ -1,0 +1,136 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>Genel Ayarlar</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Genel ayarlar yakında burada yapılandırılabilecektir.
+                    </div>
+                    
+                    <form>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Sistem Ayarları</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="systemName" class="form-label">Sistem Adı</label>
+                                <input type="text" class="form-control" id="systemName" value="HTTP Anomali Tespit Sistemi">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="systemUrl" class="form-label">Sistem URL</label>
+                                <input type="url" class="form-control" id="systemUrl" value="http://localhost:8000">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="logLevel" class="form-label">Log Seviyesi</label>
+                                <select class="form-select" id="logLevel">
+                                    <option>INFO</option>
+                                    <option selected>WARNING</option>
+                                    <option>ERROR</option>
+                                    <option>DEBUG</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="timezone" class="form-label">Zaman Dilimi</label>
+                                <select class="form-select" id="timezone">
+                                    <option selected>Europe/Istanbul</option>
+                                    <option>UTC</option>
+                                    <option>Europe/London</option>
+                                    <option>America/New_York</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Anomali Tespit Ayarları</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="detectionMode" class="form-label">Tespit Modu</label>
+                                <select class="form-select" id="detectionMode">
+                                    <option>Pasif</option>
+                                    <option selected>Aktif</option>
+                                    <option>Öğrenme</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="sensitivityLevel" class="form-label">Hassasiyet Seviyesi</label>
+                                <select class="form-select" id="sensitivityLevel">
+                                    <option>Düşük</option>
+                                    <option selected>Orta</option>
+                                    <option>Yüksek</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="thresholdValue" class="form-label">Eşik Değeri (%)</label>
+                                <input type="number" class="form-control" id="thresholdValue" value="75" min="0" max="100">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="anomalyActions" class="form-label">Anomali Tespit Eylemi</label>
+                                <select class="form-select" id="anomalyActions">
+                                    <option>Sadece Kaydet</option>
+                                    <option selected>Kaydet ve Uyar</option>
+                                    <option>Kaydet, Uyar ve Engelle</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableMachineLearning" checked>
+                                    <label class="form-check-label" for="enableMachineLearning">Makine Öğrenmesi Modelini Etkinleştir</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableAutomaticBlocking">
+                                    <label class="form-check-label" for="enableAutomaticBlocking">Otomatik IP Engellemeyi Etkinleştir</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Bildirim Ayarları</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="emailNotifications" class="form-label">E-posta Bildirimleri</label>
+                                <select class="form-select" id="emailNotifications">
+                                    <option>Kapalı</option>
+                                    <option>Sadece Kritik</option>
+                                    <option selected>Tüm Anomaliler</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="emailRecipients" class="form-label">E-posta Alıcıları</label>
+                                <input type="text" class="form-control" id="emailRecipients" value="admin@example.com, security@example.com">
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enablePushNotifications" checked>
+                                    <label class="form-check-label" for="enablePushNotifications">Anlık Bildirimler</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-outline-secondary me-2">Sıfırla</button>
+                            <button type="submit" class="btn btn-primary">Ayarları Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

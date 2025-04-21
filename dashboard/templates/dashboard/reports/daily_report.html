@@ -1,0 +1,157 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-file-code me-2"></i>Günlük Rapor</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Günlük rapor sonuçları yakında burada gösterilecektir.
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reportDate" class="form-label">Rapor Tarihi</label>
+                                <input type="date" class="form-control" id="reportDate" value="2023-08-15">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reportFormat" class="form-label">Rapor Formatı</label>
+                                <select class="form-select" id="reportFormat">
+                                    <option value="html">HTML</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="csv">CSV</option>
+                                    <option value="json">JSON</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-sync-alt me-2"></i>Raporu Oluştur
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="text-primary mb-2">2,458</h3>
+                                    <p class="text-muted mb-0">Toplam İstek</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="text-danger mb-2">37</h3>
+                                    <p class="text-muted mb-0">Tespit Edilen Anomaliler</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="text-warning mb-2">1.5%</h3>
+                                    <p class="text-muted mb-0">Anomali Oranı</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="text-success mb-2">98.5%</h3>
+                                    <p class="text-muted mb-0">Normal Trafik</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Saatlik Trafik Dağılımı</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="trafficDistribution" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Anomali Tipleri</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="anomalyTypes" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Saatlik Trafik grafiği
+        const trafficCtx = document.getElementById('trafficDistribution').getContext('2d');
+        new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                datasets: [{
+                    label: 'Trafik',
+                    data: [45, 30, 25, 20, 15, 20, 30, 50, 120, 150, 180, 190, 210, 230, 200, 190, 180, 190, 170, 140, 110, 80, 60, 50],
+                    borderColor: '#0f62fe',
+                    backgroundColor: 'rgba(15, 98, 254, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Anomali Tipleri grafiği
+        const anomalyCtx = document.getElementById('anomalyTypes').getContext('2d');
+        new Chart(anomalyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'DoS', 'Aşırı İstek', 'Diğer'],
+                datasets: [{
+                    data: [12, 8, 6, 4, 5, 2],
+                    backgroundColor: [
+                        '#da1e28',
+                        '#ff832b',
+                        '#0f62fe',
+                        '#8a3ffc',
+                        '#24a148',
+                        '#6f6f6f'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
+{% endblock %} 

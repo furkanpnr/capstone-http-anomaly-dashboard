@@ -1,0 +1,17 @@
+{% comment %}
+İstatistik kartları için ortak template
+Kullanım:
+{% include 'dashboard/partials/stat_card.html' with value="2,458" label="Toplam İstek" color_class="text-primary" %}
+
+Parametreler:
+- value: Gösterilecek değer
+- label: İstatistik açıklaması
+- color_class: Renk sınıfı (text-primary, text-danger, text-warning, text-success)
+{% endcomment %}
+
+<div class="card h-100">
+    <div class="card-body text-center">
+        <h3 class="{{ color_class }} mb-2">{{ value }}</h3>
+        <p class="text-muted mb-0">{{ label }}</p>
+    </div>
+</div> 

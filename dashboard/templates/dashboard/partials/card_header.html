@@ -1,0 +1,12 @@
+{% comment %}
+Kart başlığı için ortak template
+Kullanım:
+{% include 'dashboard/partials/card_header.html' with title="Başlık" icon="fas fa-chart-line" %}
+{% endcomment %}
+
+<div class="card-header">
+    <h5 class="card-title mb-0">
+        {% if icon %}<i class="{{ icon }} me-2"></i>{% endif %}
+        {{ title }}
+    </h5>
+</div> 

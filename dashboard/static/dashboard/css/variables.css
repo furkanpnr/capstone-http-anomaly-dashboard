@@ -1,0 +1,56 @@
+:root {
+    /* Ana renkler */
+    --primary-color: #0f62fe;
+    --primary-light: #4589ff;
+    --primary-dark: #0043ce;
+    
+    /* Fonksiyonel renkler */
+    --success-color: #24a148;
+    --info-color: #0072c3;
+    --warning-color: #f1c21b;
+    --danger-color: #da1e28;
+    
+    /* Karanlık tema renkleri */
+    --bg-color-dark: #111827;
+    --bg-sidebar-dark: #1f2937;
+    --bg-navbar-dark: #1f2937;
+    --bg-card-dark: #1f2937;
+    --text-primary-dark: #f3f4f6;
+    --text-secondary-dark: #e5e7eb;
+    --text-muted-dark: #d1d5db;
+    
+    /* Açık tema renkleri */
+    --bg-color-light: #f9fafb;
+    --bg-sidebar-light: #ffffff;
+    --bg-navbar-light: #ffffff;
+    --bg-card-light: #ffffff;
+    --text-primary-light: #111827;
+    --text-secondary-light: #4b5563;
+    --text-muted-light: #6b7280;
+    
+    /* Nötr renkler */
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Boyutlar */
+    --sidebar-width: 280px;
+    --navbar-height: 64px;
+    --border-radius: 4px;
+    --card-border-radius: 8px;
+    
+    /* Gölgeler */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    
+    /* Geçişler */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+} 

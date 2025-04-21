@@ -43,7 +43,7 @@ html, body {
     height: var(--navbar-height);
     background-color: var(--bg-navbar-dark);
     box-shadow: var(--shadow-sm);
-    z-index: 1000;
+    z-index: 1001;
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
@@ -60,9 +60,14 @@ html, body {
     width: var(--sidebar-width);
     background-color: var(--bg-sidebar-dark);
     border-right: 1px solid var(--gray-800);
-    z-index: 900;
+    z-index: 1000;
     transition: transform var(--transition-normal);
-    overflow-y: visible;
+    overflow-y: auto;
+    transform: translateX(-100%);
+}
+
+.sidebar:not(.hidden) {
+    transform: translateX(0);
 }
 
 .sidebar-sticky {
@@ -128,12 +133,20 @@ html, body {
 
 /* Ana içerik alanı */
 .main-content {
-    margin-left: var(--sidebar-width);
     padding: 1.5rem;
-    transition: margin var(--transition-normal);
-    min-height: calc(100vh - var(--navbar-height) - 58px);
+    transition: all var(--transition-normal);
+    min-height: calc(100vh - var(--navbar-height));
     display: flex;
     flex-direction: column;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar açıkken ana içerik düzeni */
+.sidebar:not(.hidden) + .main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
 }
 
 /* Sidebar gizleme */
@@ -157,6 +170,7 @@ html, body {
     align-items: center;
     justify-content: center;
     transition: color var(--transition-fast);
+    z-index: 1001;
 }
 
 #sidebarCollapseBtn:hover {
@@ -164,11 +178,14 @@ html, body {
 }
 
 #sidebarCollapseBtn i {
-    transition: transform 0.3s ease;
+    display: inline-block;
+    transition: all 0.5s ease;
+    transform: rotate(0deg);
+    will-change: transform;
 }
 
 #sidebarCollapseBtn.active i {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 }
 
 /* Kullanıcı dropdown */
@@ -278,19 +295,32 @@ html, body {
     color: var(--text-primary-dark);
 }
 
+.table td, 
+.table th {
+    color: var(--text-primary-dark) !important;
+    padding: 0.75rem;
+    border-top: 1px solid var(--gray-800);
+    vertical-align: middle;
+}
+
+/* Tablo başlıkları için özel stil */
+.table thead th {
+    color: var(--text-primary-dark) !important;
+    font-weight: 600;
+    border-bottom: 2px solid var(--gray-800);
+}
+
+/* Çizgili tablo satırları için arka plan rengi */
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.table thead th {
-    border-bottom: 2px solid var(--gray-800);
-    font-weight: 600;
-}
-
-.table td, .table th {
-    padding: 0.75rem;
-    border-top: 1px solid var(--gray-800);
-    vertical-align: middle;
+/* Anomali kayıtları, tespit edilen anomaliler ve HTTP trafiği tablolarındaki metinler */
+.anomaly-table td,
+.anomaly-table th,
+.traffic-table td,
+.traffic-table th {
+    color: var(--text-primary-dark) !important;
 }
 
 /* Form elemanları */
@@ -391,14 +421,19 @@ a:hover {
 /* Responsive */
 @media (max-width: 767.98px) {
     .sidebar {
-        width: 100%;
+        width: 280px;
         transform: translateX(-100%);
     }
-    .sidebar.hidden {
+    .sidebar:not(.hidden) {
         transform: translateX(0);
     }
-    .main-content {
+    /* Mobilde sidebar açıkken ana içerik tam genişlikte kalır */
+    .sidebar:not(.hidden) + .main-content {
         margin-left: 0;
+        width: 100%;
+    }
+    .main-content {
+        width: 100%;
     }
     .navbar {
         padding: 0 1rem;
@@ -507,17 +542,21 @@ a:hover {
     font-size: 0.875rem;
     color: var(--text-secondary-dark);
     margin-top: auto;
-    margin-left: var(--sidebar-width);
-    transition: margin var(--transition-normal);
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.footer .container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .footer .text-gray-500 {
     color: var(--gray-500);
-}
-
-/* Dashboard container */
-.dashboard-container {
-    padding: 0 0.5rem;
 }
 
 /* Light theme overrides - sadece korunması için */
@@ -659,4 +698,44 @@ body.light-theme ::-webkit-scrollbar-thumb:hover {
 
 body.light-theme .modal-header .btn-close {
     filter: none;
-} 
+}
+
+/* Light theme table overrides */
+body.light-theme .table {
+    color: var(--text-primary-light);
+}
+
+body.light-theme .table td,
+body.light-theme .table th {
+    color: var(--text-primary-light) !important;
+    border-top: 1px solid var(--gray-200);
+}
+
+body.light-theme .table thead th {
+    color: var(--text-primary-light) !important;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+body.light-theme .anomaly-table td,
+body.light-theme .anomaly-table th,
+body.light-theme .traffic-table td,
+body.light-theme .traffic-table th {
+    color: var(--text-primary-light) !important;
+}
+
+/* Tablo arka plan renkleri */
+.table {
+    background-color: var(--bg-card-dark);
+}
+
+body.light-theme .table {
+    background-color: var(--bg-card-light);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--bg-sidebar-dark);
+}
+
+body.light-theme .table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--bg-sidebar-light);
+}

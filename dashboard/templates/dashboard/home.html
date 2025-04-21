@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Log Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dashboard/css/home.css' %}">
+</head>
+<body class="home-page light-theme">
+    <!-- Üst Menü -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand ms-3" href="#">
+                    <i class="fas fa-shield-virus"></i>
+                    HTTP_ANOMALY_DETECTOR
+                </a>
+            </div>
+            <div class="d-flex">
+                <a href="https://github.com" class="nav-link">GitHub</a>
+                <a href="#team" class="nav-link">Team</a>
+                <a href="#support" class="nav-link">Support</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana İçerik -->
+    <main class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6 ps-4 pe-5">
+                <h1 class="display-4 mb-4">HTTP Log Analysis</h1>
+                <p class="lead text-muted mb-3">
+                    This system utilizes HTTP logs to detect potential cyber attacks.
+                </p>
+                <div class="features mb-4">
+                    <div class="feature-item">
+                        <i class="fas fa-search"></i>
+                        <span>Log Analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-brain"></i>
+                        <span>ML Model</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Security Reports</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <button class="btn btn-primary mb-2">
+                        <i class="fas fa-search me-2"></i>
+                        Scan Now
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Go to Dashboard
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5 class="chart-title">Attacks Detected</h5>
+                    <canvas id="attacksChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% include 'dashboard/partials/footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Grafik için örnek veri
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLightTheme = document.body.classList.contains('light-theme');
+            const gridColor = isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+            const tickColor = isLightTheme ? '#374151' : '#6f6f6f';
+            
+            const ctx = document.getElementById('attacksChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'Attacks',
+                        data: Array.from({length: 24}, () => Math.floor(Math.random() * 50)),
+                        borderColor: '#0f62fe',
+                        backgroundColor: 'rgba(15, 98, 254, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: tickColor,
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 15
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: tickColor
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

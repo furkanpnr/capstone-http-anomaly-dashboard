@@ -14,39 +14,6 @@
                     </div>
                     
                     <form>
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h5 class="border-bottom pb-2">Sistem Ayarları</h5>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="systemName" class="form-label">Sistem Adı</label>
-                                <input type="text" class="form-control" id="systemName" value="HTTP Anomali Tespit Sistemi">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="systemUrl" class="form-label">Sistem URL</label>
-                                <input type="url" class="form-control" id="systemUrl" value="http://localhost:8000">
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="logLevel" class="form-label">Log Seviyesi</label>
-                                <select class="form-select" id="logLevel">
-                                    <option>INFO</option>
-                                    <option selected>WARNING</option>
-                                    <option>ERROR</option>
-                                    <option>DEBUG</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="timezone" class="form-label">Zaman Dilimi</label>
-                                <select class="form-select" id="timezone">
-                                    <option selected>Europe/Istanbul</option>
-                                    <option>UTC</option>
-                                    <option>Europe/London</option>
-                                    <option>America/New_York</option>
-                                </select>
-                            </div>
-                        </div>
                         
                         <div class="row mb-4">
                             <div class="col-12">
@@ -56,9 +23,8 @@
                             <div class="col-md-6 mb-3">
                                 <label for="detectionMode" class="form-label">Tespit Modu</label>
                                 <select class="form-select" id="detectionMode">
-                                    <option>Pasif</option>
-                                    <option selected>Aktif</option>
-                                    <option>Öğrenme</option>
+                                    <option>Passive</option>
+                                    <option selected>Active</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -79,20 +45,27 @@
                                 <select class="form-select" id="anomalyActions">
                                     <option>Sadece Kaydet</option>
                                     <option selected>Kaydet ve Uyar</option>
-                                    <option>Kaydet, Uyar ve Engelle</option>
                                 </select>
                             </div>
-                            
-                            <div class="col-12 mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="enableMachineLearning" checked>
-                                    <label class="form-check-label" for="enableMachineLearning">Makine Öğrenmesi Modelini Etkinleştir</label>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="scanInterval" class="form-label">Tarama Aralığı</label>
+                                <select class="form-select" id="scanInterval">
+                                    <option>Her 5 Dakikada</option>
+                                    <option selected>Her 15 Dakikada</option>
+                                    <option>Her 30 Dakikada</option>
+                                    <option>Her Saatte</option>
+                                </select>
                             </div>
-                            <div class="col-12 mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="enableAutomaticBlocking">
-                                    <label class="form-check-label" for="enableAutomaticBlocking">Otomatik IP Engellemeyi Etkinleştir</label>
+                            <div class="col-md-6 mb-3">
+                                <label for="batchSize" class="form-label">Batch Size</label>
+                                <select class="form-select" id="batchSize">
+                                    <option>100 İstek</option>
+                                    <option selected>250 İstek</option>
+                                    <option>500 İstek</option>
+                                    <option>1000 İstek</option>
+                                </select>
+                                <div class="form-text">
+                                    Her taramada analiz edilecek HTTP istek sayısını belirler. Yüksek değerler sistem kaynaklarını daha fazla kullanır.
                                 </div>
                             </div>
                         </div>
@@ -105,21 +78,15 @@
                             <div class="col-md-6 mb-3">
                                 <label for="emailNotifications" class="form-label">E-posta Bildirimleri</label>
                                 <select class="form-select" id="emailNotifications">
-                                    <option>Kapalı</option>
-                                    <option>Sadece Kritik</option>
-                                    <option selected>Tüm Anomaliler</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option selected>High</option>
                                 </select>
                             </div>
+                            
                             <div class="col-md-6 mb-3">
                                 <label for="emailRecipients" class="form-label">E-posta Alıcıları</label>
                                 <input type="text" class="form-control" id="emailRecipients" value="admin@example.com, security@example.com">
-                            </div>
-                            
-                            <div class="col-12 mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="enablePushNotifications" checked>
-                                    <label class="form-check-label" for="enablePushNotifications">Anlık Bildirimler</label>
-                                </div>
                             </div>
                         </div>
                         

@@ -6,17 +6,14 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Anomali Grafikleri</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-pie me-2"></i>Anomaly Graphs</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Anomali grafikleri yakında burada gösterilecektir.
-                    </div>
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">HTTP Metot Dağılımı</h6>
+                                    <h6 class="card-title mb-0">HTTP Method Distribution</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="methodChart" height="250"></canvas>
@@ -26,7 +23,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Durum Kodu Dağılımı</h6>
+                                    <h6 class="card-title mb-0">Status Code Distribution</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="statusChart" height="250"></canvas>
@@ -44,7 +41,7 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // HTTP Metot grafiği
+        // HTTP Method chart
         const methodCtx = document.getElementById('methodChart').getContext('2d');
         new Chart(methodCtx, {
             type: 'pie',
@@ -67,14 +64,14 @@
             }
         });
         
-        // Durum Kodu grafiği
+        // Status Code chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         new Chart(statusCtx, {
             type: 'bar',
             data: {
                 labels: ['2xx', '3xx', '4xx', '5xx'],
                 datasets: [{
-                    label: 'Durum Kodları',
+                    label: 'Status Codes',
                     data: [75, 10, 12, 3],
                     backgroundColor: [
                         '#24a148',

@@ -6,17 +6,13 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-file-code me-2"></i>Haftalık Rapor</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-bar me-2"></i>Weekly Report</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Haftalık rapor sonuçları yakında burada gösterilecektir.
-                    </div>
-                    
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="weekPicker" class="form-label">Hafta Seçimi</label>
+                                <label for="weekPicker" class="form-label">Select Week</label>
                                 <div class="input-group">
                                     <input type="week" class="form-control" id="weekPicker" value="2023-W33">
                                 </div>
@@ -24,7 +20,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="reportFormat" class="form-label">Rapor Formatı</label>
+                                <label for="reportFormat" class="form-label">Report Format</label>
                                 <select class="form-select" id="reportFormat">
                                     <option value="html">HTML</option>
                                     <option value="pdf">PDF</option>
@@ -35,7 +31,7 @@
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
                             <button class="btn btn-primary w-100">
-                                <i class="fas fa-sync-alt me-2"></i>Raporu Oluştur
+                                <i class="fas fa-sync-alt me-2"></i>Generate Report
                             </button>
                         </div>
                     </div>
@@ -45,7 +41,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-primary mb-2">15,320</h3>
-                                    <p class="text-muted mb-0">Toplam İstek</p>
+                                    <p class="text-muted mb-0">Total Requests</p>
                                 </div>
                             </div>
                         </div>
@@ -53,7 +49,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-danger mb-2">205</h3>
-                                    <p class="text-muted mb-0">Tespit Edilen Anomaliler</p>
+                                    <p class="text-muted mb-0">Detected Anomalies</p>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +57,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-warning mb-2">1.3%</h3>
-                                    <p class="text-muted mb-0">Anomali Oranı</p>
+                                    <p class="text-muted mb-0">Anomaly Rate</p>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +65,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-success mb-2">98.7%</h3>
-                                    <p class="text-muted mb-0">Normal Trafik</p>
+                                    <p class="text-muted mb-0">Normal Traffic</p>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +75,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Günlük Trafik</h6>
+                                    <h6 class="card-title mb-0">Daily Traffic</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="dailyTraffic" height="250"></canvas>
@@ -89,7 +85,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Anomali Dağılımı</h6>
+                                    <h6 class="card-title mb-0">Anomaly Distribution</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="anomalyDistribution" height="250"></canvas>
@@ -102,76 +98,76 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Günlük Anomali Özeti</h6>
+                                    <h6 class="card-title mb-0">Daily Anomaly Summary</h6>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-sm table-hover table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Tarih</th>
-                                                <th>Toplam İstek</th>
-                                                <th>Anomaliler</th>
-                                                <th>Oran</th>
-                                                <th>En Sık Görülen Anomali</th>
-                                                <th>Durum</th>
+                                                <th>Date</th>
+                                                <th>Total Requests</th>
+                                                <th>Anomalies</th>
+                                                <th>Rate</th>
+                                                <th>Most Common Anomaly</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Pazartesi, 14 Ağustos</td>
+                                                <td>Monday, August 14</td>
                                                 <td>2,158</td>
                                                 <td>32</td>
                                                 <td>1.48%</td>
                                                 <td>SQL Injection</td>
-                                                <td><span class="badge bg-warning">Orta</span></td>
+                                                <td><span class="badge bg-warning">Medium</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Salı, 15 Ağustos</td>
+                                                <td>Tuesday, August 15</td>
                                                 <td>2,458</td>
                                                 <td>37</td>
                                                 <td>1.50%</td>
                                                 <td>XSS</td>
-                                                <td><span class="badge bg-warning">Orta</span></td>
+                                                <td><span class="badge bg-warning">Medium</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Çarşamba, 16 Ağustos</td>
+                                                <td>Wednesday, August 16</td>
                                                 <td>2,310</td>
                                                 <td>25</td>
                                                 <td>1.08%</td>
                                                 <td>Path Traversal</td>
-                                                <td><span class="badge bg-success">Düşük</span></td>
+                                                <td><span class="badge bg-success">Low</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Perşembe, 17 Ağustos</td>
+                                                <td>Thursday, August 17</td>
                                                 <td>2,504</td>
                                                 <td>29</td>
                                                 <td>1.16%</td>
                                                 <td>SQL Injection</td>
-                                                <td><span class="badge bg-success">Düşük</span></td>
+                                                <td><span class="badge bg-success">Low</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Cuma, 18 Ağustos</td>
+                                                <td>Friday, August 18</td>
                                                 <td>2,689</td>
                                                 <td>43</td>
                                                 <td>1.60%</td>
                                                 <td>XSS</td>
-                                                <td><span class="badge bg-danger">Yüksek</span></td>
+                                                <td><span class="badge bg-danger">High</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Cumartesi, 19 Ağustos</td>
+                                                <td>Saturday, August 19</td>
                                                 <td>1,890</td>
                                                 <td>22</td>
                                                 <td>1.16%</td>
-                                                <td>Aşırı İstek</td>
-                                                <td><span class="badge bg-success">Düşük</span></td>
+                                                <td>Excessive Requests</td>
+                                                <td><span class="badge bg-success">Low</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Pazar, 20 Ağustos</td>
+                                                <td>Sunday, August 20</td>
                                                 <td>1,311</td>
                                                 <td>17</td>
                                                 <td>1.30%</td>
                                                 <td>Path Traversal</td>
-                                                <td><span class="badge bg-success">Düşük</span></td>
+                                                <td><span class="badge bg-success">Low</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -189,14 +185,14 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Günlük Trafik grafiği
+        // Daily Traffic chart
         const trafficCtx = document.getElementById('dailyTraffic').getContext('2d');
         new Chart(trafficCtx, {
             type: 'bar',
             data: {
-                labels: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'],
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                 datasets: [{
-                    label: 'Trafik',
+                    label: 'Traffic',
                     data: [2158, 2458, 2310, 2504, 2689, 1890, 1311],
                     backgroundColor: '#0f62fe'
                 }]
@@ -212,14 +208,14 @@
             }
         });
         
-        // Anomali Dağılımı grafiği
+        // Anomaly Distribution chart
         const anomalyCtx = document.getElementById('anomalyDistribution').getContext('2d');
         new Chart(anomalyCtx, {
             type: 'line',
             data: {
-                labels: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'],
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                 datasets: [{
-                    label: 'Anomaliler',
+                    label: 'Anomalies',
                     data: [32, 37, 25, 29, 43, 22, 17],
                     borderColor: '#da1e28',
                     backgroundColor: 'rgba(218, 30, 40, 0.1)',

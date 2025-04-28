@@ -6,23 +6,19 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-file-code me-2"></i>Günlük Rapor</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-area me-2"></i>Daily Report</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Günlük rapor sonuçları yakında burada gösterilecektir.
-                    </div>
-                    
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="reportDate" class="form-label">Rapor Tarihi</label>
+                                <label for="reportDate" class="form-label">Report Date</label>
                                 <input type="date" class="form-control" id="reportDate" value="2023-08-15">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="reportFormat" class="form-label">Rapor Formatı</label>
+                                <label for="reportFormat" class="form-label">Report Format</label>
                                 <select class="form-select" id="reportFormat">
                                     <option value="html">HTML</option>
                                     <option value="pdf">PDF</option>
@@ -33,7 +29,7 @@
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
                             <button class="btn btn-primary w-100">
-                                <i class="fas fa-sync-alt me-2"></i>Raporu Oluştur
+                                <i class="fas fa-sync-alt me-2"></i>Generate Report
                             </button>
                         </div>
                     </div>
@@ -43,7 +39,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-primary mb-2">2,458</h3>
-                                    <p class="text-muted mb-0">Toplam İstek</p>
+                                    <p class="text-muted mb-0">Total Requests</p>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +47,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-danger mb-2">37</h3>
-                                    <p class="text-muted mb-0">Tespit Edilen Anomaliler</p>
+                                    <p class="text-muted mb-0">Detected Anomalies</p>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +55,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-warning mb-2">1.5%</h3>
-                                    <p class="text-muted mb-0">Anomali Oranı</p>
+                                    <p class="text-muted mb-0">Anomaly Rate</p>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +63,7 @@
                             <div class="card h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-success mb-2">98.5%</h3>
-                                    <p class="text-muted mb-0">Normal Trafik</p>
+                                    <p class="text-muted mb-0">Normal Traffic</p>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +73,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Saatlik Trafik Dağılımı</h6>
+                                    <h6 class="card-title mb-0">Hourly Traffic Distribution</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="trafficDistribution" height="250"></canvas>
@@ -87,7 +83,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Anomali Tipleri</h6>
+                                    <h6 class="card-title mb-0">Anomaly Types</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="anomalyTypes" height="250"></canvas>
@@ -105,14 +101,14 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Saatlik Trafik grafiği
+        // Hourly Traffic chart
         const trafficCtx = document.getElementById('trafficDistribution').getContext('2d');
         new Chart(trafficCtx, {
             type: 'line',
             data: {
                 labels: Array.from({length: 24}, (_, i) => `${i}:00`),
                 datasets: [{
-                    label: 'Trafik',
+                    label: 'Traffic',
                     data: [45, 30, 25, 20, 15, 20, 30, 50, 120, 150, 180, 190, 210, 230, 200, 190, 180, 190, 170, 140, 110, 80, 60, 50],
                     borderColor: '#0f62fe',
                     backgroundColor: 'rgba(15, 98, 254, 0.1)',
@@ -129,12 +125,12 @@
             }
         });
         
-        // Anomali Tipleri grafiği
+        // Anomaly Types chart
         const anomalyCtx = document.getElementById('anomalyTypes').getContext('2d');
         new Chart(anomalyCtx, {
             type: 'doughnut',
             data: {
-                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'DoS', 'Aşırı İstek', 'Diğer'],
+                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'DoS', 'Excessive Requests', 'Other'],
                 datasets: [{
                     data: [12, 8, 6, 4, 5, 2],
                     backgroundColor: [

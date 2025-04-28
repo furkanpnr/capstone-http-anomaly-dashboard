@@ -6,77 +6,73 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>Genel Ayarlar</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>General Settings</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Genel ayarlar yakında burada yapılandırılabilecektir.
-                    </div>
-                    
                     <form>
                         
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2">Anomali Tespit Ayarları</h5>
+                                <h5 class="border-bottom pb-2">Anomaly Detection Settings</h5>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="detectionMode" class="form-label">Tespit Modu</label>
+                                <label for="detectionMode" class="form-label">Detection Mode</label>
                                 <select class="form-select" id="detectionMode">
                                     <option>Passive</option>
                                     <option selected>Active</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="sensitivityLevel" class="form-label">Hassasiyet Seviyesi</label>
+                                <label for="sensitivityLevel" class="form-label">Sensitivity Level</label>
                                 <select class="form-select" id="sensitivityLevel">
-                                    <option>Düşük</option>
-                                    <option selected>Orta</option>
-                                    <option>Yüksek</option>
+                                    <option>Low</option>
+                                    <option selected>Medium</option>
+                                    <option>High</option>
                                 </select>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="thresholdValue" class="form-label">Eşik Değeri (%)</label>
+                                <label for="thresholdValue" class="form-label">Threshold Value (%)</label>
                                 <input type="number" class="form-control" id="thresholdValue" value="75" min="0" max="100">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="anomalyActions" class="form-label">Anomali Tespit Eylemi</label>
+                                <label for="anomalyActions" class="form-label">Anomaly Detection Action</label>
                                 <select class="form-select" id="anomalyActions">
-                                    <option>Sadece Kaydet</option>
-                                    <option selected>Kaydet ve Uyar</option>
+                                    <option>Log Only</option>
+                                    <option selected>Log and Alert</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="scanInterval" class="form-label">Tarama Aralığı</label>
+                                <label for="scanInterval" class="form-label">Scan Interval</label>
                                 <select class="form-select" id="scanInterval">
-                                    <option>Her 5 Dakikada</option>
-                                    <option selected>Her 15 Dakikada</option>
-                                    <option>Her 30 Dakikada</option>
-                                    <option>Her Saatte</option>
+                                    <option>Every 5 Minutes</option>
+                                    <option selected>Every 15 Minutes</option>
+                                    <option>Every 30 Minutes</option>
+                                    <option>Every Hour</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="batchSize" class="form-label">Batch Size</label>
                                 <select class="form-select" id="batchSize">
-                                    <option>100 İstek</option>
-                                    <option selected>250 İstek</option>
-                                    <option>500 İstek</option>
-                                    <option>1000 İstek</option>
+                                    <option>100 Requests</option>
+                                    <option selected>250 Requests</option>
+                                    <option>500 Requests</option>
+                                    <option>1000 Requests</option>
                                 </select>
                                 <div class="form-text">
-                                    Her taramada analiz edilecek HTTP istek sayısını belirler. Yüksek değerler sistem kaynaklarını daha fazla kullanır.
+                                    Determines the number of HTTP requests to analyze in each scan. Higher values use more system resources.
                                 </div>
                             </div>
                         </div>
                         
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2">Bildirim Ayarları</h5>
+                                <h5 class="border-bottom pb-2">Notification Settings</h5>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="emailNotifications" class="form-label">E-posta Bildirimleri</label>
+                                <label for="emailNotifications" class="form-label">Email Notifications</label>
                                 <select class="form-select" id="emailNotifications">
                                     <option>Low</option>
                                     <option>Medium</option>
@@ -85,14 +81,14 @@
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="emailRecipients" class="form-label">E-posta Alıcıları</label>
+                                <label for="emailRecipients" class="form-label">Email Recipients</label>
                                 <input type="text" class="form-control" id="emailRecipients" value="admin@example.com, security@example.com">
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-end">
-                            <button type="reset" class="btn btn-outline-secondary me-2">Sıfırla</button>
-                            <button type="submit" class="btn btn-primary">Ayarları Kaydet</button>
+                            <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
                         </div>
                     </form>
                 </div>

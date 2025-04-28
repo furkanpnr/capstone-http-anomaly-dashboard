@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     {% include 'dashboard/partials/head.html' %}
 </head>
@@ -11,7 +11,7 @@
         <div class="row flex-grow-1">
             {% include 'dashboard/partials/sidebar.html' with active_menu=active_menu %}
             
-            <!-- Ana İçerik -->
+            <!-- Main Content -->
             <main role="main" class="main-content fade-in">
                 {% block content %}{% endblock %}
             </main>

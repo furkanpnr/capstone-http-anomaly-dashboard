@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'dashboard/css/home.css' %}">
 </head>
 <body class="home-page light-theme">
-    <!-- Üst Menü -->
+    <!-- Top Menu -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
@@ -28,7 +28,7 @@
         </div>
     </nav>
 
-    <!-- Ana İçerik -->
+    <!-- Main Content -->
     <main class="container-fluid">
         <div class="row align-items-center">
             <div class="col-md-6 ps-4 pe-5">
@@ -51,10 +51,6 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column">
-                    <button class="btn btn-primary mb-2">
-                        <i class="fas fa-search me-2"></i>
-                        Scan Now
-                    </button>
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
                         <i class="fas fa-tachometer-alt me-2"></i>
                         Go to Dashboard
@@ -75,7 +71,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Grafik için örnek veri
+        // Example data for chart
         document.addEventListener('DOMContentLoaded', function() {
             const isLightTheme = document.body.classList.contains('light-theme');
             const gridColor = isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';

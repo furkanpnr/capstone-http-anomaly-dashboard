@@ -1,13 +1,13 @@
 {% comment %}
-Rapor sayfaları için ortak form template'i
-Kullanım:
-{% include 'dashboard/partials/report_form.html' with date_type="date" date_id="reportDate" date_label="Rapor Tarihi" date_value="2023-08-15" %}
+Common form template for report pages
+Usage:
+{% include 'dashboard/partials/report_form.html' with date_type="date" date_id="reportDate" date_label="Report Date" date_value="2023-08-15" %}
 
-Parametreler:
-- date_type: "date", "month" veya "week" olabilir
-- date_id: Form öğesi ID'si
-- date_label: Form öğesi etiketi
-- date_value: Varsayılan değer
+Parameters:
+- date_type: can be "date", "month" or "week"
+- date_id: Form element ID
+- date_label: Form element label
+- date_value: Default value
 {% endcomment %}
 
 <div class="row mb-4">
@@ -19,7 +19,7 @@ Parametreler:
     </div>
     <div class="col-md-4">
         <div class="form-group">
-            <label for="reportFormat" class="form-label">Rapor Formatı</label>
+            <label for="reportFormat" class="form-label">Report Format</label>
             <select class="form-select" id="reportFormat">
                 <option value="html">HTML</option>
                 <option value="pdf">PDF</option>
@@ -30,7 +30,7 @@ Parametreler:
     </div>
     <div class="col-md-4 d-flex align-items-end">
         <button class="btn btn-primary w-100">
-            <i class="fas fa-sync-alt me-2"></i>Raporu Oluştur
+            <i class="fas fa-sync-alt me-2"></i>Generate Report
         </button>
     </div>
 </div> 

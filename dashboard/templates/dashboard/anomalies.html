@@ -6,25 +6,21 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-bug me-2"></i>Tespit Edilen Anomaliler</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Detected Anomalies</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Tespit edilen anomaliler yakında burada listelenecektir.
-                    </div>
-                    
                     <div class="table-responsive">
                         <table class="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Tarih/Saat</th>
-                                    <th>IP Adresi</th>
-                                    <th>HTTP Metodu</th>
+                                    <th>Date/Time</th>
+                                    <th>IP Address</th>
+                                    <th>HTTP Method</th>
                                     <th>Endpoint</th>
-                                    <th>Anomali Tipi</th>
-                                    <th>Risk Seviyesi</th>
-                                    <th>İşlemler</th>
+                                    <th>Anomaly Type</th>
+                                    <th>Risk Level</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +31,7 @@
                                     <td>POST</td>
                                     <td>/api/users</td>
                                     <td>SQL Injection</td>
-                                    <td><span class="badge bg-danger">Yüksek</span></td>
+                                    <td><span class="badge bg-danger">High</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
                                         <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
@@ -48,7 +44,7 @@
                                     <td>GET</td>
                                     <td>/admin/config</td>
                                     <td>Path Traversal</td>
-                                    <td><span class="badge bg-warning">Orta</span></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
                                         <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
@@ -61,7 +57,7 @@
                                     <td>POST</td>
                                     <td>/api/comments</td>
                                     <td>XSS</td>
-                                    <td><span class="badge bg-warning">Orta</span></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
                                         <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
@@ -73,8 +69,8 @@
                                     <td>192.168.1.115</td>
                                     <td>GET</td>
                                     <td>/api/products</td>
-                                    <td>Aşırı İstek</td>
-                                    <td><span class="badge bg-info">Düşük</span></td>
+                                    <td>Excessive Requests</td>
+                                    <td><span class="badge bg-info">Low</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
                                         <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
@@ -87,13 +83,13 @@
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center mt-4">
                             <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Önceki</a>
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
                             </li>
                             <li class="page-item active"><a class="page-link" href="#">1</a></li>
                             <li class="page-item"><a class="page-link" href="#">2</a></li>
                             <li class="page-item"><a class="page-link" href="#">3</a></li>
                             <li class="page-item">
-                                <a class="page-link" href="#">Sonraki</a>
+                                <a class="page-link" href="#">Next</a>
                             </li>
                         </ul>
                     </nav>

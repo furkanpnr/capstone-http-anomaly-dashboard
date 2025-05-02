@@ -6,7 +6,7 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>HTTP İstek Analizi</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>HTTP Request Analysis</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="requestChart" height="250"></canvas>
@@ -16,7 +16,7 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Tespit Edilen Anomaliler</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Detected Anomalies</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="anomalyChart" height="250"></canvas>
@@ -29,18 +29,18 @@
         <div class="col-md-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Son Anomali Kayıtları</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Recent Anomaly Records</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-sm table-striped">
                             <thead>
                                 <tr>
-                                    <th>IP Adresi</th>
+                                    <th>IP Address</th>
                                     <th>Method</th>
                                     <th>Endpoint</th>
-                                    <th>Durum</th>
-                                    <th>Tarih</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,22 +48,22 @@
                                     <td>192.168.1.105</td>
                                     <td>POST</td>
                                     <td>/api/users</td>
-                                    <td><span class="badge bg-danger">Anomali</span></td>
-                                    <td>10.08.2023 14:25</td>
+                                    <td><span class="badge bg-danger">Anomaly</span></td>
+                                    <td>08/10/2023 14:25</td>
                                 </tr>
                                 <tr>
                                     <td>192.168.1.108</td>
                                     <td>GET</td>
                                     <td>/admin/config</td>
-                                    <td><span class="badge bg-danger">Anomali</span></td>
-                                    <td>10.08.2023 13:05</td>
+                                    <td><span class="badge bg-danger">Anomaly</span></td>
+                                    <td>08/10/2023 13:05</td>
                                 </tr>
                                 <tr>
                                     <td>192.168.1.110</td>
                                     <td>GET</td>
                                     <td>/api/products</td>
                                     <td><span class="badge bg-success">Normal</span></td>
-                                    <td>10.08.2023 12:45</td>
+                                    <td>08/10/2023 12:45</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -74,7 +74,7 @@
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-shield-alt me-2"></i>Güvenlik Durumu</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-shield-alt me-2"></i>Security Status</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
@@ -82,20 +82,20 @@
                             <i class="fas fa-exclamation-circle text-warning fa-2x"></i>
                         </div>
                         <div>
-                            <h6 class="mb-0">Orta Seviye Tehdit</h6>
-                            <small class="text-muted">Son 24 saat içinde</small>
+                            <h6 class="mb-0">Medium Level Threat</h6>
+                            <small class="text-muted">In the last 24 hours</small>
                         </div>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Normal İstekler</span>
+                        <span>Normal Requests</span>
                         <span>85%</span>
                     </div>
                     <div class="progress mb-3" style="height: 8px;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Şüpheli İstekler</span>
+                        <span>Suspicious Requests</span>
                         <span>15%</span>
                     </div>
                     <div class="progress" style="height: 8px;">
@@ -111,14 +111,14 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // HTTP İstek grafiği
+        // HTTP Request chart
         const requestCtx = document.getElementById('requestChart').getContext('2d');
         new Chart(requestCtx, {
             type: 'line',
             data: {
                 labels: Array.from({length: 24}, (_, i) => `${i}:00`),
                 datasets: [{
-                    label: 'İstekler',
+                    label: 'Requests',
                     data: Array.from({length: 24}, () => Math.floor(Math.random() * 80) + 20),
                     borderColor: '#0f62fe',
                     backgroundColor: 'rgba(15, 98, 254, 0.1)',
@@ -158,14 +158,14 @@
             }
         });
         
-        // Anomali grafiği
+        // Anomaly chart
         const anomalyCtx = document.getElementById('anomalyChart').getContext('2d');
         new Chart(anomalyCtx, {
             type: 'bar',
             data: {
                 labels: ['SQL Injection', 'XSS', 'Path Traversal', 'Command Injection', 'DoS'],
                 datasets: [{
-                    label: 'Tespit Sayısı',
+                    label: 'Detection Count',
                     data: [12, 19, 8, 5, 14],
                     backgroundColor: [
                         'rgba(220, 53, 69, 0.7)',  // Danger

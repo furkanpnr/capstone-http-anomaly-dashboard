@@ -6,230 +6,155 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-user-shield me-2"></i>Kullanıcı Ayarları</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-user-cog me-2"></i>User Settings</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Bu sayfa geliştirme aşamasındadır. Kullanıcı ayarları yakında burada yapılandırılabilecektir.
-                    </div>
-                    
                     <div class="row">
                         <div class="col-md-3">
                             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                 <button class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
-                                    <i class="fas fa-user me-2"></i>Profil Bilgileri
+                                    <i class="fas fa-user me-2"></i>Profile Information
                                 </button>
                                 <button class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill" data-bs-target="#v-pills-password" type="button" role="tab" aria-controls="v-pills-password" aria-selected="false">
-                                    <i class="fas fa-key me-2"></i>Parola Değiştir
-                                </button>
-                                <button class="nav-link" id="v-pills-security-tab" data-bs-toggle="pill" data-bs-target="#v-pills-security" type="button" role="tab" aria-controls="v-pills-security" aria-selected="false">
-                                    <i class="fas fa-shield-alt me-2"></i>Güvenlik Ayarları
+                                    <i class="fas fa-key me-2"></i>Change Password
                                 </button>
                                 <button class="nav-link" id="v-pills-notifications-tab" data-bs-toggle="pill" data-bs-target="#v-pills-notifications" type="button" role="tab" aria-controls="v-pills-notifications" aria-selected="false">
-                                    <i class="fas fa-bell me-2"></i>Bildirim Tercihleri
+                                    <i class="fas fa-bell me-2"></i>Notification Preferences
                                 </button>
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <!-- Profil Bilgileri -->
+                                <!-- Profile Information -->
                                 <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                                     <form>
                                         <div class="row mb-4">
                                             <div class="col-md-6 mb-3">
-                                                <label for="firstName" class="form-label">Ad</label>
-                                                <input type="text" class="form-control" id="firstName" value="Sistem">
+                                                <label for="firstName" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="firstName" value="System">
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="lastName" class="form-label">Soyad</label>
-                                                <input type="text" class="form-control" id="lastName" value="Yöneticisi">
+                                                <label for="lastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="lastName" value="Administrator">
                                             </div>
                                             
                                             <div class="col-md-6 mb-3">
-                                                <label for="email" class="form-label">E-posta</label>
+                                                <label for="email" class="form-label">Email</label>
                                                 <input type="email" class="form-control" id="email" value="admin@example.com">
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="phone" class="form-label">Telefon</label>
+                                                <label for="phone" class="form-label">Phone</label>
                                                 <input type="tel" class="form-control" id="phone" value="+90 555 123 4567">
                                             </div>
                                             
                                             <div class="col-12 mb-3">
-                                                <label for="jobTitle" class="form-label">Ünvan</label>
-                                                <input type="text" class="form-control" id="jobTitle" value="Güvenlik Analisti">
+                                                <label for="jobTitle" class="form-label">Job Title</label>
+                                                <input type="text" class="form-control" id="jobTitle" value="Security Analyst">
                                             </div>
                                         </div>
                                         
                                         <div class="d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary">Profili Güncelle</button>
+                                            <button type="submit" class="btn btn-primary">Update Profile</button>
                                         </div>
                                     </form>
                                 </div>
                                 
-                                <!-- Parola Değiştir -->
+                                <!-- Change Password -->
                                 <div class="tab-pane fade" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
                                     <form>
                                         <div class="row mb-4">
                                             <div class="col-12 mb-3">
-                                                <label for="currentPassword" class="form-label">Mevcut Parola</label>
+                                                <label for="currentPassword" class="form-label">Current Password</label>
                                                 <input type="password" class="form-control" id="currentPassword">
                                             </div>
                                             
                                             <div class="col-12 mb-3">
-                                                <label for="newPassword" class="form-label">Yeni Parola</label>
+                                                <label for="newPassword" class="form-label">New Password</label>
                                                 <input type="password" class="form-control" id="newPassword">
-                                                <div class="form-text">Parola en az 8 karakter uzunluğunda olmalı ve büyük harf, küçük harf, sayı ve özel karakter içermelidir.</div>
+                                                <div class="form-text">Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special characters.</div>
                                             </div>
                                             
                                             <div class="col-12 mb-3">
-                                                <label for="confirmPassword" class="form-label">Yeni Parola (Tekrar)</label>
+                                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
                                                 <input type="password" class="form-control" id="confirmPassword">
                                             </div>
                                         </div>
                                         
                                         <div class="d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary">Parolayı Değiştir</button>
+                                            <button type="submit" class="btn btn-primary">Change Password</button>
                                         </div>
                                     </form>
                                 </div>
                                 
-                                <!-- Güvenlik Ayarları -->
-                                <div class="tab-pane fade" id="v-pills-security" role="tabpanel" aria-labelledby="v-pills-security-tab">
-                                    <form>
-                                        <div class="row mb-4">
-                                            <div class="col-12 mb-3">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="enableTwoFactor" checked>
-                                                    <label class="form-check-label" for="enableTwoFactor">İki Faktörlü Kimlik Doğrulama (2FA)</label>
-                                                </div>
-                                                <div class="form-text mb-3">Hesabınıza giriş yaparken ek güvenlik katmanı ekler.</div>
-                                            </div>
-                                            
-                                            <div class="col-12 mb-4">
-                                                <label class="form-label">Kimlik Doğrulama Yöntemi</label>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="radio" name="authMethod" id="authApp" checked>
-                                                    <label class="form-check-label" for="authApp">
-                                                        Kimlik Doğrulama Uygulaması (Google Authenticator, Authy)
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="radio" name="authMethod" id="smsAuth">
-                                                    <label class="form-check-label" for="smsAuth">
-                                                        SMS ile Doğrulama
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="authMethod" id="emailAuth">
-                                                    <label class="form-check-label" for="emailAuth">
-                                                        E-posta ile Doğrulama
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="col-12 mb-3">
-                                                <label class="form-label">Aktif Oturumlar</label>
-                                                <div class="card mb-2">
-                                                    <div class="card-body py-2">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <div><strong>Windows 10 - Chrome</strong></div>
-                                                                <small class="text-muted">192.168.1.100 - İstanbul, Türkiye - Şu an aktif</small>
-                                                            </div>
-                                                            <button type="button" class="btn btn-sm btn-outline-danger">Sonlandır</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card">
-                                                    <div class="card-body py-2">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <div><strong>iPhone - Safari</strong></div>
-                                                                <small class="text-muted">192.168.1.105 - İstanbul, Türkiye - Son giriş: 2 saat önce</small>
-                                                            </div>
-                                                            <button type="button" class="btn btn-sm btn-outline-danger">Sonlandır</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex justify-content-end">
-                                            <button type="button" class="btn btn-outline-danger me-2">Tüm Oturumları Sonlandır</button>
-                                            <button type="submit" class="btn btn-primary">Ayarları Kaydet</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                
-                                <!-- Bildirim Tercihleri -->
+                                <!-- Notification Preferences -->
                                 <div class="tab-pane fade" id="v-pills-notifications" role="tabpanel" aria-labelledby="v-pills-notifications-tab">
                                     <form>
                                         <div class="row mb-4">
                                             <div class="col-12 mb-3">
-                                                <h6 class="mb-3">E-posta Bildirimleri</h6>
+                                                <h6 class="mb-3">Email Notifications</h6>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="emailHighRisk" checked>
                                                     <label class="form-check-label" for="emailHighRisk">
-                                                        Yüksek Riskli Anomali Tespitleri
+                                                        High Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="emailMediumRisk" checked>
                                                     <label class="form-check-label" for="emailMediumRisk">
-                                                        Orta Riskli Anomali Tespitleri
+                                                        Medium Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="emailLowRisk">
                                                     <label class="form-check-label" for="emailLowRisk">
-                                                        Düşük Riskli Anomali Tespitleri
+                                                        Low Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="emailReports" checked>
                                                     <label class="form-check-label" for="emailReports">
-                                                        Günlük/Haftalık/Aylık Raporlar
+                                                        Daily/Weekly/Monthly Reports
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="emailSystem" checked>
                                                     <label class="form-check-label" for="emailSystem">
-                                                        Sistem Bildirimleri
+                                                        System Notifications
                                                     </label>
                                                 </div>
                                             </div>
                                             
                                             <div class="col-12 mb-3">
-                                                <h6 class="mb-3">Uygulama İçi Bildirimler</h6>
+                                                <h6 class="mb-3">In-App Notifications</h6>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="appHighRisk" checked>
                                                     <label class="form-check-label" for="appHighRisk">
-                                                        Yüksek Riskli Anomali Tespitleri
+                                                        High Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="appMediumRisk" checked>
                                                     <label class="form-check-label" for="appMediumRisk">
-                                                        Orta Riskli Anomali Tespitleri
+                                                        Medium Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input" type="checkbox" id="appLowRisk" checked>
                                                     <label class="form-check-label" for="appLowRisk">
-                                                        Düşük Riskli Anomali Tespitleri
+                                                        Low Risk Anomaly Detections
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="appSystem" checked>
                                                     <label class="form-check-label" for="appSystem">
-                                                        Sistem Bildirimleri
+                                                        System Notifications
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary">Tercihleri Kaydet</button>
+                                            <button type="submit" class="btn btn-primary">Save Preferences</button>
                                         </div>
                                     </form>
                                 </div>

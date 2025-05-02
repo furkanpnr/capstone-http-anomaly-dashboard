@@ -38,7 +38,7 @@ services:
       - postgres
     volumes:
       - anomaly_static_data:/app/staticfiles
-      - ./nginx-logs:/mnt/nginx-logs:ro
+      - /data/compose/1/nginx-logs:/mnt/nginx-logs:ro
     networks:
       - anomaly_network
 

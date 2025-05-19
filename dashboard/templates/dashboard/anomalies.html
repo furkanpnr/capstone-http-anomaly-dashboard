@@ -2,11 +2,81 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <div class="row">
+    <div class="row mb-4">
+        <!-- En Son Tespit Edilen Anomaliler -->
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-bell me-2"></i>Recently Detected Anomalies</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="alert-container">
+                        {% for anomaly in latest_anomalies %}
+                        <div class="alert {% if anomaly.risk_level == 'high' %}alert-danger{% elif anomaly.risk_level == 'medium' %}alert-warning{% else %}alert-info{% endif %} mb-0 border-0 rounded-0 d-flex align-items-center py-3">
+                            <div class="alert-icon me-3">
+                                {% if anomaly.risk_level == 'high' %}
+                                <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                                {% elif anomaly.risk_level == 'medium' %}
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                                {% else %}
+                                <i class="fas fa-info-circle fa-2x text-info"></i>
+                                {% endif %}
+                            </div>
+                            <div class="alert-content">
+                                <h6 class="mb-1">{{ anomaly.get_label_display }} - {{ anomaly.timestamp|date:"d.m.Y H:i:s" }}</h6>
+                                <p class="mb-0">IP: {{ anomaly.ip }} - URL: {{ anomaly.url|truncatechars:50 }}</p>
+                                <small class="text-muted">Detected at: {{ anomaly.scanned_at|date:"d.m.Y H:i:s" }}</small>
+                            </div>
+                            <div class="ms-auto">
+                                <button class="btn btn-sm btn-primary" onclick="showAnomalyDetails({{ anomaly.id }})">
+                                    <i class="fas fa-eye"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-2"></i> No anomalies detected yet.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Detected Anomalies</h5>
+                    <div class="d-flex">
+                        <!-- Sıralama Seçenekleri -->
+                        <div class="dropdown me-2">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-sort me-1"></i> Sort By
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                                <li><a class="dropdown-item {% if current_sort == '-timestamp' %}active{% endif %}" href="?sort=-timestamp&records={{ current_records }}">Newest First</a></li>
+                                <li><a class="dropdown-item {% if current_sort == 'timestamp' %}active{% endif %}" href="?sort=timestamp&records={{ current_records }}">Oldest First</a></li>
+                                <li><a class="dropdown-item {% if current_sort == '-scanned_at' %}active{% endif %}" href="?sort=-scanned_at&records={{ current_records }}">Recently Detected</a></li>
+                                <li><a class="dropdown-item {% if current_sort == '-risk_level' %}active{% endif %}" href="?sort=-risk_level&records={{ current_records }}">Risk Level (High-Low)</a></li>
+                                <li><a class="dropdown-item {% if current_sort == 'risk_level' %}active{% endif %}" href="?sort=risk_level&records={{ current_records }}">Risk Level (Low-High)</a></li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Kayıt Sayısı Seçenekleri -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="recordsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-list-ol me-1"></i> {{ current_records }} Records
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recordsDropdown">
+                                <li><a class="dropdown-item {% if current_records == 10 %}active{% endif %}" href="?sort={{ current_sort }}&records=10">10 Records</a></li>
+                                <li><a class="dropdown-item {% if current_records == 25 %}active{% endif %}" href="?sort={{ current_sort }}&records=25">25 Records</a></li>
+                                <li><a class="dropdown-item {% if current_records == 50 %}active{% endif %}" href="?sort={{ current_sort }}&records=50">50 Records</a></li>
+                                <li><a class="dropdown-item {% if current_records == 100 %}active{% endif %}" href="?sort={{ current_sort }}&records=100">100 Records</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -24,78 +94,331 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for anomaly in page_obj %}
                                 <tr>
-                                    <td>1</td>
-                                    <td>2023-08-15 13:45:22</td>
-                                    <td>192.168.1.105</td>
-                                    <td>POST</td>
-                                    <td>/api/users</td>
-                                    <td>SQL Injection</td>
-                                    <td><span class="badge bg-danger">High</span></td>
+                                    <td>{{ anomaly.id }}</td>
+                                    <td>{{ anomaly.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                    <td>{{ anomaly.ip }}</td>
+                                    <td>{{ anomaly.method }}</td>
+                                    <td>{{ anomaly.url }}</td>
+                                    <td>{{ anomaly.get_label_display }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
+                                        {% if anomaly.risk_level == 'high' %}
+                                            <span class="badge bg-danger">High</span>
+                                        {% elif anomaly.risk_level == 'medium' %}
+                                            <span class="badge bg-warning">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="showAnomalyDetails({{ anomaly.id }})">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" disabled>
+                                            <i class="fas fa-flag"></i>
+                                        </button>
                                     </td>
                                 </tr>
+                                {% empty %}
                                 <tr>
-                                    <td>2</td>
-                                    <td>2023-08-15 14:12:51</td>
-                                    <td>192.168.1.108</td>
-                                    <td>GET</td>
-                                    <td>/admin/config</td>
-                                    <td>Path Traversal</td>
-                                    <td><span class="badge bg-warning">Medium</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
-                                    </td>
+                                    <td colspan="8" class="text-center">No anomalies found</td>
                                 </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>2023-08-15 15:30:03</td>
-                                    <td>192.168.1.120</td>
-                                    <td>POST</td>
-                                    <td>/api/comments</td>
-                                    <td>XSS</td>
-                                    <td><span class="badge bg-warning">Medium</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>2023-08-15 16:45:19</td>
-                                    <td>192.168.1.115</td>
-                                    <td>GET</td>
-                                    <td>/api/products</td>
-                                    <td>Excessive Requests</td>
-                                    <td><span class="badge bg-info">Low</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-sm btn-warning"><i class="fas fa-flag"></i></button>
-                                    </td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     
+                    {% if page_obj.paginator.num_pages > 1 %}
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center mt-4">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            <!-- İlk Sayfa -->
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="?page=1&sort={{ current_sort }}&records={{ current_records }}" aria-label="First">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
                             </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <!-- Önceki Sayfa -->
+                            {% if page_obj.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&sort={{ current_sort }}&records={{ current_records }}" aria-label="Previous">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                            </li>
+                            {% endif %}
+
+                            <!-- Sayfa Numaraları -->
+                            {% for page_num in page_range %}
+                                {% if page_num == page_obj.number %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}&sort={{ current_sort }}&records={{ current_records }}">{{ page_num }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Sonraki Sayfa -->
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&sort={{ current_sort }}&records={{ current_records }}" aria-label="Next">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                            </li>
+                            {% endif %}
+
+                            <!-- Son Sayfa -->
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&sort={{ current_sort }}&records={{ current_records }}" aria-label="Last">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
                             </li>
                         </ul>
                     </nav>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Anomaly Details Modal -->
+<div class="modal fade mt-4" id="anomalyModal" tabindex="-1" aria-labelledby="anomalyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="anomalyModalLabel">
+                    <i class="fas fa-search-plus me-2"></i>Anomaly Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1060; position: relative;"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm table-borderless mb-0">
+                                    <tr>
+                                        <th width="35%" class="text-muted">Timestamp:</th>
+                                        <td id="modal-timestamp"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">IP Address:</th>
+                                        <td id="modal-ip"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">Method:</th>
+                                        <td id="modal-method"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">URL:</th>
+                                        <td id="modal-url" class="text-break"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-shield-alt me-2"></i>Detection Details
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm table-borderless mb-0">
+                                    <tr>
+                                        <th width="35%" class="text-muted">Status Code:</th>
+                                        <td id="modal-status"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">Anomaly Type:</th>
+                                        <td id="modal-type"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">Risk Level:</th>
+                                        <td id="modal-risk"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-file-alt me-2"></i>Additional Information
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <th width="17%" class="text-muted">User Agent:</th>
+                                <td id="modal-useragent" class="text-break"></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Referrer:</th>
+                                <td id="modal-referrer" class="text-break"></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Raw Log:</th>
+                                <td>
+                                    <div class="bg-light p-2 rounded">
+                                        <pre id="modal-rawlog" class="mb-0 text-break" style="white-space: pre-wrap; word-break: break-all; font-size: 0.875rem;"></pre>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ek CSS stil alanı -->
+<style>
+.alert-container {
+    overflow: hidden;
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+.alert-container .alert {
+    position: relative;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.alert-container .alert:last-child {
+    border-bottom: none;
+}
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentModal = null;
+
+function showAnomalyDetails(anomalyId) {
+    // Initialize and show modal
+    if (currentModal) {
+        currentModal.dispose();
+    }
+    
+    const modalElement = document.getElementById('anomalyModal');
+    currentModal = new bootstrap.Modal(modalElement, {
+        backdrop: false,  // Disable the dark backdrop
+        keyboard: true    // Allow ESC key to close
+    });
+    
+    // Add our own semi-transparent backdrop
+    modalElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    
+    // Ensure modal is above other elements
+    modalElement.style.zIndex = '1050';
+    
+    // Make sure modal can be closed by clicking outside
+    modalElement.addEventListener('click', function(event) {
+        if (event.target === modalElement) {
+            currentModal.hide();
+        }
+    });
+    
+    // Make close button work
+    const closeButtons = modalElement.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.style.zIndex = '1060';
+        button.style.position = 'relative';
+        button.addEventListener('click', function() {
+            currentModal.hide();
+        });
+    });
+    
+    currentModal.show();
+    
+    // Clear previous content and show loading
+    const loadingFields = [
+        'timestamp', 'ip', 'method', 'url', 'status',
+        'type', 'risk', 'useragent', 'referrer', 'rawlog'
+    ];
+    loadingFields.forEach(field => {
+        document.getElementById(`modal-${field}`).innerHTML = '<div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>';
+    });
+    
+    // Fetch anomaly details
+    fetch(`/dashboard/anomalies/${anomalyId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update modal content with proper formatting
+            document.getElementById('modal-timestamp').textContent = data.timestamp;
+            document.getElementById('modal-ip').textContent = data.ip;
+            document.getElementById('modal-method').textContent = data.method;
+            document.getElementById('modal-url').textContent = data.url;
+            document.getElementById('modal-status').textContent = data.status_code;
+            document.getElementById('modal-type').textContent = data.label;
+            
+            // Format risk level with badge
+            const riskElement = document.getElementById('modal-risk');
+            const riskLevel = data.risk_level.toLowerCase();
+            let badgeClass = 'bg-info';
+            if (riskLevel === 'high') badgeClass = 'bg-danger';
+            else if (riskLevel === 'medium') badgeClass = 'bg-warning';
+            riskElement.innerHTML = `<span class="badge ${badgeClass}">${data.risk_level}</span>`;
+            
+            // Handle optional fields with proper formatting
+            document.getElementById('modal-useragent').textContent = data.user_agent || 'N/A';
+            document.getElementById('modal-referrer').textContent = data.referrer || 'N/A';
+            
+            // Format raw log with proper styling
+            const rawLogElement = document.getElementById('modal-rawlog');
+            rawLogElement.textContent = data.raw_log;
+        })
+        .catch(error => {
+            console.error('Error fetching anomaly details:', error);
+            loadingFields.forEach(field => {
+                document.getElementById(`modal-${field}`).innerHTML = '<span class="text-danger">Error loading data</span>';
+            });
+        });
+}
+
+// Cleanup modal instance when hidden
+document.getElementById('anomalyModal').addEventListener('hidden.bs.modal', function () {
+    if (currentModal) {
+        currentModal.dispose();
+        currentModal = null;
+    }
+    // Reset backdrop style
+    this.style.backgroundColor = '';
+});
+
+// Add global click handler for closing modal
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && currentModal) {
+        currentModal.hide();
+    }
+});
+</script>
 {% endblock %} 

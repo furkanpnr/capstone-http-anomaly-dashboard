@@ -5,172 +5,183 @@
     <div class="row">
         <div class="col-md-12 mb-4">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-chart-bar me-2"></i>Weekly Report</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Weekly Report ({{ week_start|date:"M d" }} - {{ week_end|date:"M d, Y" }})
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <form method="get" class="d-flex gap-2">
+                            <input type="week" class="form-control" id="weekPicker" name="week" value="{{ week_value }}">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sync-alt me-2"></i>Generate
+                            </button>
+                        </form>
+                    </div>
                 </div>
+                
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="weekPicker" class="form-label">Select Week</label>
-                                <div class="input-group">
-                                    <input type="week" class="form-control" id="weekPicker" value="2023-W33">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="mb-2">{{ total_requests }}</h3>
+                                    <p class="mb-0">Total Requests</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="reportFormat" class="form-label">Report Format</label>
-                                <select class="form-select" id="reportFormat">
-                                    <option value="html">HTML</option>
-                                    <option value="pdf">PDF</option>
-                                    <option value="csv">CSV</option>
-                                    <option value="json">JSON</option>
-                                </select>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="mb-2">{{ anomaly_logs }}</h3>
+                                    <p class="mb-0">Detected Anomalies</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button class="btn btn-primary w-100">
-                                <i class="fas fa-sync-alt me-2"></i>Generate Report
-                            </button>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="mb-2">{{ anomaly_rate }}%</h3>
+                                    <p class="mb-0">Anomaly Rate</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white h-100">
+                                <div class="card-body text-center">
+                                    <h3 class="mb-2">{{ normal_rate }}%</h3>
+                                    <p class="mb-0">Normal Traffic</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="row mb-4">
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-8">
                             <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h3 class="text-primary mb-2">15,320</h3>
-                                    <p class="text-muted mb-0">Total Requests</p>
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Daily Traffic Trend</h6>
+                                </div>
+                                <div class="card-body" style="height: 400px;">
+                                    <canvas id="trafficTrend"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-4">
                             <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h3 class="text-danger mb-2">205</h3>
-                                    <p class="text-muted mb-0">Detected Anomalies</p>
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Risk Level Distribution</h6>
+                                </div>
+                                <div class="card-body" style="height: 400px;">
+                                    <canvas id="riskDistribution"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
                             <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h3 class="text-warning mb-2">1.3%</h3>
-                                    <p class="text-muted mb-0">Anomaly Rate</p>
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Most Targeted URLs</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive" style="max-height: 300px;">
+                                        <table class="table table-sm table-hover">
+                                            <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                                                <tr>
+                                                    <th>URL</th>
+                                                    <th class="text-end">Anomalies</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for url in top_urls %}
+                                                <tr>
+                                                    <td class="text-break">{{ url.url }}</td>
+                                                    <td class="text-end">{{ url.total }}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="2" class="text-center">No data available</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-6">
                             <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h3 class="text-success mb-2">98.7%</h3>
-                                    <p class="text-muted mb-0">Normal Traffic</p>
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">Top Attacking IPs</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive" style="max-height: 300px;">
+                                        <table class="table table-sm table-hover">
+                                            <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                                                <tr>
+                                                    <th>IP Address</th>
+                                                    <th class="text-end">Anomalies</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for ip in top_ips %}
+                                                <tr>
+                                                    <td>{{ ip.ip }}</td>
+                                                    <td class="text-end">{{ ip.total }}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="2" class="text-center">No data available</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0">Daily Traffic</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="dailyTraffic" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0">Anomaly Distribution</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="anomalyDistribution" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-2">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Daily Anomaly Summary</h6>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-sm table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Total Requests</th>
-                                                <th>Anomalies</th>
-                                                <th>Rate</th>
-                                                <th>Most Common Anomaly</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Monday, August 14</td>
-                                                <td>2,158</td>
-                                                <td>32</td>
-                                                <td>1.48%</td>
-                                                <td>SQL Injection</td>
-                                                <td><span class="badge bg-warning">Medium</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tuesday, August 15</td>
-                                                <td>2,458</td>
-                                                <td>37</td>
-                                                <td>1.50%</td>
-                                                <td>XSS</td>
-                                                <td><span class="badge bg-warning">Medium</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Wednesday, August 16</td>
-                                                <td>2,310</td>
-                                                <td>25</td>
-                                                <td>1.08%</td>
-                                                <td>Path Traversal</td>
-                                                <td><span class="badge bg-success">Low</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Thursday, August 17</td>
-                                                <td>2,504</td>
-                                                <td>29</td>
-                                                <td>1.16%</td>
-                                                <td>SQL Injection</td>
-                                                <td><span class="badge bg-success">Low</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Friday, August 18</td>
-                                                <td>2,689</td>
-                                                <td>43</td>
-                                                <td>1.60%</td>
-                                                <td>XSS</td>
-                                                <td><span class="badge bg-danger">High</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Saturday, August 19</td>
-                                                <td>1,890</td>
-                                                <td>22</td>
-                                                <td>1.16%</td>
-                                                <td>Excessive Requests</td>
-                                                <td><span class="badge bg-success">Low</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sunday, August 20</td>
-                                                <td>1,311</td>
-                                                <td>17</td>
-                                                <td>1.30%</td>
-                                                <td>Path Traversal</td>
-                                                <td><span class="badge bg-success">Low</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive" style="max-height: 400px;">
+                                        <table class="table table-sm table-hover table-striped">
+                                            <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th class="text-end">Total Requests</th>
+                                                    <th class="text-end">Anomalies</th>
+                                                    <th class="text-end">Rate</th>
+                                                    <th>Most Common Anomaly</th>
+                                                    <th class="text-center">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for stat in daily_stats %}
+                                                <tr>
+                                                    <td>{{ stat.date|date:"l, M d" }}</td>
+                                                    <td class="text-end">{{ stat.total_requests }}</td>
+                                                    <td class="text-end">{{ stat.anomalies }}</td>
+                                                    <td class="text-end">{{ stat.rate }}%</td>
+                                                    <td>{{ stat.most_common_anomaly }}</td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-{{ stat.status.level }}">{{ stat.status.text }}</span>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No data available</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -180,61 +191,122 @@
         </div>
     </div>
 </div>
+
+{{ daily_trend|json_script:"daily-trend" }}
+{{ risk_data|json_script:"risk-data" }}
+{{ attack_data|json_script:"attack-data" }}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Daily Traffic chart
-        const trafficCtx = document.getElementById('dailyTraffic').getContext('2d');
-        new Chart(trafficCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                datasets: [{
-                    label: 'Traffic',
-                    data: [2158, 2458, 2310, 2504, 2689, 1890, 1311],
-                    backgroundColor: '#0f62fe'
-                }]
+document.addEventListener('DOMContentLoaded', function() {
+    // Ortak chart özellikleri
+    Chart.defaults.color = '#6c757d';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    
+    // Daily Traffic Trend Chart
+    const trendCtx = document.getElementById('trafficTrend').getContext('2d');
+    const trendData = JSON.parse(document.getElementById('daily-trend').textContent);
+    
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: trendData.map(item => item.date),
+            datasets: [{
+                label: 'Total Traffic',
+                data: trendData.map(item => item.total),
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                yAxisID: 'y'
+            }, {
+                label: 'Anomalies',
+                data: trendData.map(item => item.anomalies),
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Total Requests'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Anomalies'
+                    },
+                    grid: {
+                        drawOnChartArea: false
                     }
                 }
-            }
-        });
-        
-        // Anomaly Distribution chart
-        const anomalyCtx = document.getElementById('anomalyDistribution').getContext('2d');
-        new Chart(anomalyCtx, {
-            type: 'line',
-            data: {
-                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                datasets: [{
-                    label: 'Anomalies',
-                    data: [32, 37, 25, 29, 43, 22, 17],
-                    borderColor: '#da1e28',
-                    backgroundColor: 'rgba(218, 30, 40, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 4
-                }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            plugins: {
+                legend: {
+                    position: 'top'
                 }
             }
-        });
+        }
     });
+    
+    // Risk Level Distribution Chart
+    const riskCtx = document.getElementById('riskDistribution').getContext('2d');
+    const riskData = JSON.parse(document.getElementById('risk-data').textContent);
+    
+    new Chart(riskCtx, {
+        type: 'doughnut',
+        data: {
+            labels: riskData.map(item => item.label),
+            datasets: [{
+                data: riskData.map(item => item.count),
+                backgroundColor: [
+                    '#dc3545',  // High - Danger
+                    '#ffc107',  // Medium - Warning
+                    '#0dcaf0',  // Low - Info
+                    '#198754'   // Normal - Success
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+
+    // Form submit on week change
+    document.getElementById('weekPicker').addEventListener('change', function() {
+        this.form.submit();
+    });
+});
 </script>
 {% endblock %} 

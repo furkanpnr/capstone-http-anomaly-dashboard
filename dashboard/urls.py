@@ -12,4 +12,10 @@ urlpatterns = [
     path('dashboard/reports/monthly/', views.monthly_report_view, name='monthly_report'),
     path('dashboard/settings/general/', views.settings_view, name='settings'),
     path('dashboard/settings/user/', views.user_settings_view, name='user_settings'),
+    path('dashboard/settings/user/', views.user_settings_view, name='user_settings'),
+    path('dashboard/settings/user/update-profile/', views.update_profile, name='update_profile'),
+    path('dashboard/settings/user/change-password/', views.change_password, name='change_password'),
+    path('dashboard/anomalies/<int:anomaly_id>/', views.anomaly_detail, name='anomaly_detail'),
+    path('dashboard/logout/', views.logout_view, name='logout'),
+    path('dashboard/login/', views.login_view, name='login'),
 ]

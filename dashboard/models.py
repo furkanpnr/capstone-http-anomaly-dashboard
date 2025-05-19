@@ -4,13 +4,14 @@ from django.utils.translation import gettext_lazy as _
 
 class AttackType(models.TextChoices):
     NORMAL = "normal", _("Normal")
+    PATH_TRAVERSAL = "path_traversal", _("Path Traversal")
     SQLI = "sqli", _("SQL Injection")
     XSS = "xss", _("Cross-Site Scripting (XSS)")
     COMMAND_INJECTION = "command_injection", _("Command Injection")
-    PATH_TRAVERSAL = "path_traversal", _("Path Traversal")
 
 
 class RiskLevel(models.TextChoices):
+    NORMAL = "normal", _("Normal")
     LOW = "low", _("Low")
     MEDIUM = "medium", _("Medium")
     HIGH = "high", _("High")
@@ -18,7 +19,7 @@ class RiskLevel(models.TextChoices):
 
 class HttpLog(models.Model):
     ip = models.GenericIPAddressField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField()
     method = models.CharField(max_length=10)
     url = models.TextField()
     protocol = models.CharField(max_length=20)
@@ -39,6 +40,8 @@ class HttpLog(models.Model):
         choices=RiskLevel.choices,
         default=RiskLevel.LOW,
     )
+
+    scanned_at = models.DateTimeField(auto_now_add=True)
 
     def is_anomalous(self):
         return self.label != AttackType.NORMAL
@@ -65,18 +68,6 @@ class ModelConfig(models.Model):
     enabled = models.BooleanField(
         default=True,
         help_text="Enable or disable the scanning."
-    )
-    threshold_score = models.FloatField(
-        default=0.7,
-        help_text="Minimum confidence score to consider a prediction valid."
-    )
-    auto_delete_old_logs = models.BooleanField(
-        default=False,
-        help_text="Automatically delete old logs."
-    )
-    log_retention_days = models.PositiveIntegerField(
-        default=30,
-        help_text="How many days to retain logs if auto-delete is enabled."
     )
     alert_email = models.EmailField(
         blank=True,

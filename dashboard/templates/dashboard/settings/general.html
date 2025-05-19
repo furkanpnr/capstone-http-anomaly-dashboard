@@ -6,89 +6,100 @@
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>General Settings</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-cog me-2"></i>Model Settings</h5>
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form method="POST">
+                        {% csrf_token %}
                         
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2">Anomaly Detection Settings</h5>
+                                <h5 class="border-bottom pb-2">Model Information</h5>
+                                <div class="text-muted small mb-3">This information is managed by the system and cannot be modified.</div>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="detectionMode" class="form-label">Detection Mode</label>
-                                <select class="form-select" id="detectionMode">
-                                    <option>Passive</option>
-                                    <option selected>Active</option>
-                                </select>
+                                <label class="form-label text-muted">Model Name</label>
+                                <input type="text" class="form-control bg-light" value="{{ config.model_name }}" readonly>
                             </div>
+
                             <div class="col-md-6 mb-3">
-                                <label for="sensitivityLevel" class="form-label">Sensitivity Level</label>
-                                <select class="form-select" id="sensitivityLevel">
-                                    <option>Low</option>
-                                    <option selected>Medium</option>
-                                    <option>High</option>
-                                </select>
+                                <label class="form-label text-muted">Version</label>
+                                <input type="text" class="form-control bg-light" value="{{ config.version }}" readonly>
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
-                                <label for="thresholdValue" class="form-label">Threshold Value (%)</label>
-                                <input type="number" class="form-control" id="thresholdValue" value="75" min="0" max="100">
+                                <label class="form-label text-muted">Training Date</label>
+                                <input type="text" class="form-control bg-light" value="{{ config.trained_at|date:'d.m.Y H:i' }}" readonly>
                             </div>
+
                             <div class="col-md-6 mb-3">
-                                <label for="anomalyActions" class="form-label">Anomaly Detection Action</label>
-                                <select class="form-select" id="anomalyActions">
-                                    <option>Log Only</option>
-                                    <option selected>Log and Alert</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="scanInterval" class="form-label">Scan Interval</label>
-                                <select class="form-select" id="scanInterval">
-                                    <option>Every 5 Minutes</option>
-                                    <option selected>Every 15 Minutes</option>
-                                    <option>Every 30 Minutes</option>
-                                    <option>Every Hour</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="batchSize" class="form-label">Batch Size</label>
-                                <select class="form-select" id="batchSize">
-                                    <option>100 Requests</option>
-                                    <option selected>250 Requests</option>
-                                    <option>500 Requests</option>
-                                    <option>1000 Requests</option>
-                                </select>
-                                <div class="form-text">
-                                    Determines the number of HTTP requests to analyze in each scan. Higher values use more system resources.
-                                </div>
+                                <label class="form-label text-muted">Description</label>
+                                <textarea class="form-control bg-light" rows="3" readonly>{{ config.description }}</textarea>
                             </div>
                         </div>
                         
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Scanning Settings</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="scan_interval_seconds" class="form-label">Scan Interval (seconds)</label>
+                                <input type="number" class="form-control" id="scan_interval_seconds" name="scan_interval_seconds" 
+                                       value="{{ config.scan_interval_seconds }}" min="1" required>
+                                <div class="form-text">
+                                    Time to wait between each scan
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="batch_size" class="form-label">Batch Size</label>
+                                <input type="number" class="form-control" id="batch_size" name="batch_size" 
+                                       value="{{ config.batch_size }}" min="1" required>
+                                <div class="form-text">
+                                    Number of logs to analyze in each scan
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enabled" name="enabled" 
+                                           {% if config.enabled %}checked{% endif %}>
+                                    <label class="form-check-label" for="enabled">Scanning Active</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row mb-4">
                             <div class="col-12">
                                 <h5 class="border-bottom pb-2">Notification Settings</h5>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="emailNotifications" class="form-label">Email Notifications</label>
-                                <select class="form-select" id="emailNotifications">
-                                    <option>Low</option>
-                                    <option>Medium</option>
-                                    <option selected>High</option>
-                                </select>
+                                <label for="alert_email" class="form-label">Alert Email Address</label>
+                                <input type="email" class="form-control" id="alert_email" name="alert_email" 
+                                       value="{{ config.alert_email }}">
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="emailRecipients" class="form-label">Email Recipients</label>
-                                <input type="text" class="form-control" id="emailRecipients" value="admin@example.com, security@example.com">
+                                <label for="max_risk_level_to_alert" class="form-label">Minimum Risk Level</label>
+                                <select class="form-select" id="max_risk_level_to_alert" name="max_risk_level_to_alert">
+                                    {% for level in risk_levels %}
+                                    <option value="{{ level.0 }}" {% if config.max_risk_level_to_alert == level.0 %}selected{% endif %}>
+                                        {{ level.1 }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">
+                                    Notifications will be sent for risks at this level and above
+                                </div>
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-end">
                             <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
-                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>

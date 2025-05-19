@@ -9,62 +9,51 @@
                     <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Monthly Report</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-4">
+                    <form method="get" class="row mb-4">
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label for="monthPicker" class="form-label">Select Month</label>
                                 <div class="input-group">
-                                    <input type="month" class="form-control" id="monthPicker" value="2023-08">
+                                    <input type="month" class="form-control" id="monthPicker" name="month" value="{{ month_start|date:'Y-m' }}">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="reportFormat" class="form-label">Report Format</label>
-                                <select class="form-select" id="reportFormat">
-                                    <option value="html">HTML</option>
-                                    <option value="pdf">PDF</option>
-                                    <option value="csv">CSV</option>
-                                    <option value="json">JSON</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-md-4 d-flex align-items-end">
-                            <button class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-sync-alt me-2"></i>Generate Report
                             </button>
                         </div>
-                    </div>
+                    </form>
                     
                     <div class="row mb-4">
                         <div class="col-md-3 mb-4">
-                            <div class="card h-100">
+                            <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h3 class="text-primary mb-2">64,580</h3>
+                                    <h3 class="text-primary mb-2">{{ total_requests }}</h3>
                                     <p class="text-muted mb-0">Total Requests</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3 mb-4">
-                            <div class="card h-100">
+                            <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h3 class="text-danger mb-2">872</h3>
+                                    <h3 class="text-danger mb-2">{{ anomaly_logs }}</h3>
                                     <p class="text-muted mb-0">Detected Anomalies</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3 mb-4">
-                            <div class="card h-100">
+                            <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h3 class="text-warning mb-2">1.4%</h3>
+                                    <h3 class="text-warning mb-2">{{ anomaly_rate }}%</h3>
                                     <p class="text-muted mb-0">Anomaly Rate</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3 mb-4">
-                            <div class="card h-100">
+                            <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h3 class="text-success mb-2">98.6%</h3>
+                                    <h3 class="text-success mb-2">{{ normal_rate }}%</h3>
                                     <p class="text-muted mb-0">Normal Traffic</p>
                                 </div>
                             </div>
@@ -77,18 +66,18 @@
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Monthly Traffic and Anomaly Trend</h6>
                                 </div>
-                                <div class="card-body">
-                                    <canvas id="monthlyTrend" height="300"></canvas>
+                                <div class="card-body" style="height: 400px;">
+                                    <canvas id="monthlyTrend"></canvas>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Anomaly Types</h6>
+                                    <h6 class="card-title mb-0">Risk Level Distribution</h6>
                                 </div>
-                                <div class="card-body">
-                                    <canvas id="anomalyTypes" height="300"></canvas>
+                                <div class="card-body" style="height: 400px;">
+                                    <canvas id="riskDistribution"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -101,87 +90,53 @@
                                     <h6 class="card-title mb-0">Most Targeted Endpoints</h6>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Endpoint</th>
-                                                <th>Number of Anomalies</th>
-                                                <th>Rate</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>/api/users</td>
-                                                <td>245</td>
-                                                <td>28.1%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>/api/login</td>
-                                                <td>187</td>
-                                                <td>21.4%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>/admin/config</td>
-                                                <td>156</td>
-                                                <td>17.9%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>/api/products</td>
-                                                <td>98</td>
-                                                <td>11.2%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>/api/payments</td>
-                                                <td>89</td>
-                                                <td>10.2%</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                        <table class="table table-sm table-hover">
+                                            <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                                                <tr>
+                                                    <th>URL</th>
+                                                    <th>Count</th>
+                                                    <th>Rate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for endpoint in targeted_endpoints %}
+                                                <tr>
+                                                    <td>{{ endpoint.url }}</td>
+                                                    <td>{{ endpoint.anomaly_count }}</td>
+                                                    <td>{{ endpoint.rate }}%</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="card-title mb-0">Most Attacking IPs</h6>
+                                    <h6 class="card-title mb-0">Most Active Attacking IPs</h6>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>IP Address</th>
-                                                <th>Number of Anomalies</th>
-                                                <th>Block Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>192.168.1.105</td>
-                                                <td>178</td>
-                                                <td><span class="badge bg-success">Blocked</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>192.168.1.108</td>
-                                                <td>145</td>
-                                                <td><span class="badge bg-success">Blocked</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>192.168.1.120</td>
-                                                <td>92</td>
-                                                <td><span class="badge bg-success">Blocked</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>192.168.1.115</td>
-                                                <td>87</td>
-                                                <td><span class="badge bg-danger">Not Blocked</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>192.168.1.130</td>
-                                                <td>73</td>
-                                                <td><span class="badge bg-danger">Not Blocked</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                        <table class="table table-sm table-hover">
+                                            <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                                                <tr>
+                                                    <th>IP Address</th>
+                                                    <th>Attack Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for ip in attacking_ips %}
+                                                <tr>
+                                                    <td>{{ ip.ip }}</td>
+                                                    <td>{{ ip.anomaly_count }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -191,107 +146,80 @@
         </div>
     </div>
 </div>
+
+{{ daily_trend|json_script:"daily-trend-data" }}
+{{ risk_data|json_script:"risk-data" }}
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Monthly Trend chart
-        const trendCtx = document.getElementById('monthlyTrend').getContext('2d');
-        new Chart(trendCtx, {
+        // Verileri JSON olarak al
+        const dailyTrendData = JSON.parse(document.getElementById('daily-trend-data').textContent);
+        const riskData = JSON.parse(document.getElementById('risk-data').textContent);
+
+        // Monthly Trend Chart
+        const monthlyTrendCtx = document.getElementById('monthlyTrend').getContext('2d');
+        new Chart(monthlyTrendCtx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 31}, (_, i) => i + 1),
-                datasets: [
-                    {
-                        label: 'Traffic',
-                        data: [
-                            2100, 2200, 2150, 2050, 2100, 1900, 1800,
-                            2050, 2100, 2250, 2300, 2400, 2350, 2300,
-                            2250, 2300, 2350, 2400, 2450, 2350, 2300,
-                            2200, 2100, 2050, 2000, 1950, 1900, 2000,
-                            2100, 2150, 2200
-                        ],
-                        borderColor: '#0f62fe',
-                        backgroundColor: 'rgba(15, 98, 254, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        pointHoverRadius: 4,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Anomalies',
-                        data: [
-                            28, 32, 30, 27, 29, 25, 24,
-                            27, 29, 32, 33, 35, 34, 33,
-                            32, 33, 34, 35, 36, 34, 33,
-                            31, 29, 28, 27, 26, 25, 27,
-                            29, 30, 31
-                        ],
-                        borderColor: '#da1e28',
-                        backgroundColor: 'rgba(218, 30, 40, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        pointHoverRadius: 4,
-                        yAxisID: 'y1'
-                    }
-                ]
+                labels: dailyTrendData.map(item => item.date),
+                datasets: [{
+                    label: 'Total Requests',
+                    data: dailyTrendData.map(item => item.total),
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    fill: true
+                }, {
+                    label: 'Anomalies',
+                    data: dailyTrendData.map(item => item.anomalies),
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    fill: true
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Traffic'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Anomalies'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        }
+                        beginAtZero: true
                     }
                 }
             }
         });
-        
-        // Anomaly Types chart
-        const typesCtx = document.getElementById('anomalyTypes').getContext('2d');
-        new Chart(typesCtx, {
+
+        // Risk Distribution Chart
+        const riskDistributionCtx = document.getElementById('riskDistribution').getContext('2d');
+        new Chart(riskDistributionCtx, {
             type: 'doughnut',
             data: {
-                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'DoS', 'Excessive Requests', 'Other'],
+                labels: riskData.map(item => item.label),
                 datasets: [{
-                    data: [245, 187, 156, 98, 89, 97],
+                    data: riskData.map(item => item.count),
                     backgroundColor: [
-                        '#da1e28',
-                        '#ff832b',
-                        '#0f62fe',
-                        '#8a3ffc',
-                        '#24a148',
-                        '#6f6f6f'
+                        'rgba(75, 192, 192, 0.8)',  // Normal
+                        'rgba(255, 206, 86, 0.8)',  // Low
+                        'rgba(255, 159, 64, 0.8)',  // Medium
+                        'rgba(255, 99, 132, 0.8)'   // High
                     ]
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
             }
+        });
+
+        // Form submit on month change
+        document.getElementById('monthPicker').addEventListener('change', function() {
+            this.form.submit();
         });
     });
 </script>

@@ -15,11 +15,9 @@
                                 <button class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
                                     <i class="fas fa-user me-2"></i>Profile Information
                                 </button>
+                               
                                 <button class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill" data-bs-target="#v-pills-password" type="button" role="tab" aria-controls="v-pills-password" aria-selected="false">
                                     <i class="fas fa-key me-2"></i>Change Password
-                                </button>
-                                <button class="nav-link" id="v-pills-notifications-tab" data-bs-toggle="pill" data-bs-target="#v-pills-notifications" type="button" role="tab" aria-controls="v-pills-notifications" aria-selected="false">
-                                    <i class="fas fa-bell me-2"></i>Notification Preferences
                                 </button>
                             </div>
                         </div>
@@ -27,29 +25,26 @@
                             <div class="tab-content" id="v-pills-tabContent">
                                 <!-- Profile Information -->
                                 <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                                    <form>
+                                    <form method="POST" action="{% url 'update_profile' %}">
+                                        {% csrf_token %}
                                         <div class="row mb-4">
                                             <div class="col-md-6 mb-3">
                                                 <label for="firstName" class="form-label">First Name</label>
-                                                <input type="text" class="form-control" id="firstName" value="System">
+                                                <input type="text" class="form-control" id="firstName" name="first_name" value="{{ user.first_name }}">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="lastName" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" id="lastName" value="Administrator">
+                                                <input type="text" class="form-control" id="lastName" name="last_name" value="{{ user.last_name }}">
                                             </div>
                                             
                                             <div class="col-md-6 mb-3">
                                                 <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" value="admin@example.com">
+                                                <input type="email" class="form-control bg-light" id="email" value="{{ user.email }}" readonly>
                                             </div>
+
                                             <div class="col-md-6 mb-3">
-                                                <label for="phone" class="form-label">Phone</label>
-                                                <input type="tel" class="form-control" id="phone" value="+90 555 123 4567">
-                                            </div>
-                                            
-                                            <div class="col-12 mb-3">
-                                                <label for="jobTitle" class="form-label">Job Title</label>
-                                                <input type="text" class="form-control" id="jobTitle" value="Security Analyst">
+                                                <label class="form-label">Access Level</label>
+                                                <input type="text" class="form-control bg-light" value="{% if user.is_superuser %}System Administrator{% else %}Regular User{% endif %}" readonly>
                                             </div>
                                         </div>
                                         
@@ -61,100 +56,28 @@
                                 
                                 <!-- Change Password -->
                                 <div class="tab-pane fade" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
-                                    <form>
+                                    <form method="POST" action="{% url 'change_password' %}">
+                                        {% csrf_token %}
                                         <div class="row mb-4">
                                             <div class="col-12 mb-3">
                                                 <label for="currentPassword" class="form-label">Current Password</label>
-                                                <input type="password" class="form-control" id="currentPassword">
+                                                <input type="password" class="form-control" id="currentPassword" name="current_password" required>
                                             </div>
                                             
                                             <div class="col-12 mb-3">
                                                 <label for="newPassword" class="form-label">New Password</label>
-                                                <input type="password" class="form-control" id="newPassword">
+                                                <input type="password" class="form-control" id="newPassword" name="new_password" required>
                                                 <div class="form-text">Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special characters.</div>
                                             </div>
                                             
                                             <div class="col-12 mb-3">
                                                 <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                                <input type="password" class="form-control" id="confirmPassword">
+                                                <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
                                             </div>
                                         </div>
                                         
                                         <div class="d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary">Change Password</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                
-                                <!-- Notification Preferences -->
-                                <div class="tab-pane fade" id="v-pills-notifications" role="tabpanel" aria-labelledby="v-pills-notifications-tab">
-                                    <form>
-                                        <div class="row mb-4">
-                                            <div class="col-12 mb-3">
-                                                <h6 class="mb-3">Email Notifications</h6>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="emailHighRisk" checked>
-                                                    <label class="form-check-label" for="emailHighRisk">
-                                                        High Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="emailMediumRisk" checked>
-                                                    <label class="form-check-label" for="emailMediumRisk">
-                                                        Medium Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="emailLowRisk">
-                                                    <label class="form-check-label" for="emailLowRisk">
-                                                        Low Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="emailReports" checked>
-                                                    <label class="form-check-label" for="emailReports">
-                                                        Daily/Weekly/Monthly Reports
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="emailSystem" checked>
-                                                    <label class="form-check-label" for="emailSystem">
-                                                        System Notifications
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="col-12 mb-3">
-                                                <h6 class="mb-3">In-App Notifications</h6>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="appHighRisk" checked>
-                                                    <label class="form-check-label" for="appHighRisk">
-                                                        High Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="appMediumRisk" checked>
-                                                    <label class="form-check-label" for="appMediumRisk">
-                                                        Medium Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="appLowRisk" checked>
-                                                    <label class="form-check-label" for="appLowRisk">
-                                                        Low Risk Anomaly Detections
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="appSystem" checked>
-                                                    <label class="form-check-label" for="appSystem">
-                                                        System Notifications
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary">Save Preferences</button>
                                         </div>
                                     </form>
                                 </div>

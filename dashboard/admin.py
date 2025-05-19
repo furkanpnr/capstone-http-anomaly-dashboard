@@ -7,8 +7,8 @@ from .models import HttpLog, ModelConfig, AttackType, RiskLevel
 
 @admin.register(HttpLog)
 class HttpLogAdmin(admin.ModelAdmin):
-    list_display = ("timestamp", "ip", "method", "url", "status_code", "label", "risk_level")
-    list_filter = ("label", "risk_level", "method", "status_code", "timestamp")
+    list_display = ("scanned_at", "timestamp", "ip", "method", "url", "status_code", "label", "risk_level")
+    list_filter = ("label", "risk_level", "method", "status_code", "timestamp", "scanned_at")
     search_fields = ("ip", "url", "referrer", "user_agent", "raw_log")
     ordering = ("-timestamp",)
     readonly_fields = ("timestamp", "raw_log")
@@ -32,9 +32,6 @@ class ModelConfigAdmin(admin.ModelAdmin):
         }),
         ("Scan Settings", {
             "fields": ("scan_interval_seconds", "batch_size", "enabled")
-        }),
-        ("Threshold & Retention", {
-            "fields": ("threshold_score", "auto_delete_old_logs", "log_retention_days")
         }),
         ("Alert Settings", {
             "fields": ("alert_email", "max_risk_level_to_alert")

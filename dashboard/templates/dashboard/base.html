@@ -3,9 +3,204 @@
 <html lang="en">
 <head>
     {% include 'dashboard/partials/head.html' %}
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 85px;
+            right: 25px;
+            z-index: 9999;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 5px;
+            scrollbar-width: thin;
+        }
+        
+        .toast-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .toast-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        
+        .toast-container::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        
+        .toast {
+            min-width: 300px;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left: 4px solid #10B981;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #EF4444;
+        }
+        
+        .toast.warning {
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .toast.danger {
+            border-left: 4px solid #DC2626;
+        }
+        
+        .toast .toast-header {
+            background: transparent;
+            border: none;
+            padding: 1rem 1rem 0.5rem 1rem;
+        }
+        
+        .toast.success .toast-header i {
+            color: #10B981;
+        }
+        
+        .toast.error .toast-header i {
+            color: #EF4444;
+        }
+        
+        .toast.warning .toast-header i {
+            color: #F59E0B;
+        }
+        
+        .toast.danger .toast-header i {
+            color: #DC2626;
+        }
+        
+        .toast .toast-header strong {
+            color: #1F2937;
+            font-size: 0.95rem;
+        }
+        
+        .toast .toast-body {
+            padding: 0.5rem 1rem 1rem 1rem;
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .toast .btn-close {
+            padding: 1rem;
+            margin: 0;
+            opacity: 0.5;
+        }
+        
+        .toast .btn-close:hover {
+            opacity: 0.75;
+        }
+        
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 0 0 12px 12px;
+            background: #E5E7EB;
+            overflow: hidden;
+        }
+        
+        .toast.success .toast-progress-bar {
+            background: #10B981;
+        }
+        
+        .toast.error .toast-progress-bar {
+            background: #EF4444;
+        }
+        
+        .toast.warning .toast-progress-bar {
+            background: #F59E0B;
+        }
+        
+        .toast.danger .toast-progress-bar {
+            background: #DC2626;
+        }
+        
+        .toast-progress-bar {
+            height: 100%;
+            width: 100%;
+            transition: width linear;
+        }
+        
+        .toast .counter-badge {
+            display: inline-block;
+            background: #4B5563;
+            color: white;
+            border-radius: 12px;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+        
+        .notification-summary {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            background: #3B82F6;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .notification-summary:hover {
+            background: #2563EB;
+        }
+    </style>
 </head>
 <body class="light-theme">
     {% include 'dashboard/partials/navbar.html' %}
+
+    <!-- Bildirim sesi için ses elementi (önyükleme ile) -->
+    <audio id="alertSound" preload="auto">
+        <source src="{% static 'sounds/alert.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast {% if message.tags %}{{ message.tags }}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                        <strong class="me-auto">{% if message.tags == 'success' %}Success{% else %}Error{% endif %}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <!-- Bildirim Özeti (Aşırı bildirim olduğunda görünür) -->
+    <div class="notification-summary" id="notificationSummary">
+        <i class="fas fa-bell me-2"></i> <span id="hiddenNotificationCount">0</span> more notifications. Click to show all.
+    </div>
 
     <div class="container-fluid d-flex flex-column flex-grow-1">
         <div class="row flex-grow-1">
@@ -21,5 +216,474 @@
     {% include 'dashboard/partials/footer.html' %}
     
     {% include 'dashboard/partials/scripts.html' %}
+
+    <!-- Toast JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mevcut toastları göster
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            toastElList.forEach(function(toastEl) {
+                // Toast instance
+                var toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+                
+                // Progress bar animation
+                var progressBar = toastEl.querySelector('.toast-progress-bar');
+                if (progressBar) {
+                    progressBar.style.transition = 'width 5000ms linear';
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                    }, 100);
+                }
+                
+                // Show toast with animation
+                setTimeout(() => {
+                    toastEl.classList.add('show');
+                }, 100);
+                
+                // Handle toast hiding
+                toastEl.addEventListener('hide.bs.toast', function () {
+                    toastEl.style.opacity = '0';
+                    toastEl.style.transform = 'translateX(100%)';
+                });
+            });
+        });
+        
+        // Bildirim yönetimi için değişkenler
+        const MAX_VISIBLE_TOASTS = 5; // Aynı anda gösterilecek maksimum bildirim sayısı
+        let toastGroups = {}; // Bildirim gruplarını tutacak obje
+        let hiddenNotifications = 0; // Gizlenen bildirim sayısı
+        
+        // Toast oluşturma fonksiyonu
+        function createToast(title, message, type, duration = 8000) {
+            const toastContainer = document.querySelector('.toast-container');
+            const notificationSummary = document.getElementById('notificationSummary');
+            const hiddenNotificationCount = document.getElementById('hiddenNotificationCount');
+            
+            // Bildirimleri grupla
+            const groupKey = title; // Başlığa göre grupla
+            
+            // Grup zaten varsa, sayacı artır ve mesajı güncelle
+            if (toastGroups[groupKey]) {
+                const existingToast = toastGroups[groupKey];
+                const counterBadge = existingToast.querySelector('.counter-badge');
+                
+                if (counterBadge) {
+                    let count = parseInt(counterBadge.textContent) + 1;
+                    counterBadge.textContent = count;
+                } else {
+                    // İlk kez tekrar eden bildirim, sayaç ekle
+                    const headerStrong = existingToast.querySelector('.toast-header strong');
+                    const badge = document.createElement('span');
+                    badge.className = 'counter-badge';
+                    badge.textContent = '2';
+                    headerStrong.appendChild(badge);
+                }
+                
+                // Süreyi sıfırla
+                if (existingToast._bsToast) {
+                    existingToast._bsToast.dispose();
+                }
+                
+                const bsToast = new bootstrap.Toast(existingToast, {
+                    autohide: true,
+                    delay: duration
+                });
+                
+                // Progress bar'ı sıfırla
+                const progressBar = existingToast.querySelector('.toast-progress-bar');
+                if (progressBar) {
+                    progressBar.style.transition = 'none';
+                    progressBar.style.width = '100%';
+                    
+                    setTimeout(() => {
+                        progressBar.style.transition = `width ${duration}ms linear`;
+                        progressBar.style.width = '0%';
+                    }, 50);
+                }
+                
+                existingToast._bsToast = bsToast;
+                bsToast.show();
+                
+                return bsToast;
+            }
+            
+            // Maksimum görünür bildirim sayısı kontrolü
+            const visibleToasts = toastContainer.querySelectorAll('.toast.show').length;
+            
+            if (visibleToasts >= MAX_VISIBLE_TOASTS) {
+                // Bildirim sınırına ulaşıldı, gizli bildirim sayacını artır
+                hiddenNotifications++;
+                hiddenNotificationCount.textContent = hiddenNotifications;
+                notificationSummary.style.display = 'block';
+                
+                // Gizli bir bildirim oluştur ama gösterme
+                const hiddenToast = document.createElement('div');
+                hiddenToast.className = `toast ${type} hidden-toast`;
+                hiddenToast.setAttribute('role', 'alert');
+                hiddenToast.setAttribute('aria-live', 'assertive');
+                hiddenToast.setAttribute('aria-atomic', 'true');
+                
+                let iconClass = 'fa-exclamation-circle';
+                if (type === 'success') iconClass = 'fa-check-circle';
+                if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+                if (type === 'danger') iconClass = 'fa-shield-alt';
+                
+                hiddenToast.innerHTML = `
+                    <div class="toast-header">
+                        <i class="fas ${iconClass} me-2"></i>
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar"></div>
+                    </div>
+                `;
+                
+                // Gizli bildirimi ekle ama gösterme
+                toastContainer.appendChild(hiddenToast);
+                
+                // Bu grubu kaydet
+                toastGroups[groupKey] = hiddenToast;
+                
+                return null;
+            }
+            
+            // Toast HTML'ini oluştur
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            let iconClass = 'fa-exclamation-circle';
+            if (type === 'success') iconClass = 'fa-check-circle';
+            if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+            if (type === 'danger') iconClass = 'fa-shield-alt';
+            
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <i class="fas ${iconClass} me-2"></i>
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <div class="toast-progress">
+                    <div class="toast-progress-bar"></div>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Bu grubu kaydet
+            toastGroups[groupKey] = toast;
+            
+            // Toast instance oluştur
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: duration
+            });
+            
+            // Progress bar animasyonu
+            const progressBar = toast.querySelector('.toast-progress-bar');
+            if (progressBar) {
+                progressBar.style.transition = `width ${duration}ms linear`;
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 100);
+            }
+            
+            // Toast'u göster
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Toast kapanırken temizle
+            toast.addEventListener('hidden.bs.toast', function () {
+                const groupKey = Object.keys(toastGroups).find(key => toastGroups[key] === toast);
+                if (groupKey) {
+                    delete toastGroups[groupKey]; // Gruptan kaldır
+                }
+                toast.remove();
+                
+                // Gizli bildirimlerden birini göster
+                const hiddenToasts = document.querySelectorAll('.toast.hidden-toast');
+                if (hiddenToasts.length > 0 && document.querySelectorAll('.toast.show').length < MAX_VISIBLE_TOASTS) {
+                    const oldestHiddenToast = hiddenToasts[0];
+                    oldestHiddenToast.classList.remove('hidden-toast');
+                    
+                    const bsToast = new bootstrap.Toast(oldestHiddenToast, {
+                        autohide: true,
+                        delay: duration
+                    });
+                    
+                    // Progress bar animasyonu
+                    const progressBar = oldestHiddenToast.querySelector('.toast-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.transition = `width ${duration}ms linear`;
+                        setTimeout(() => {
+                            progressBar.style.width = '0%';
+                        }, 100);
+                    }
+                    
+                    // Toast'u göster
+                    setTimeout(() => {
+                        oldestHiddenToast.classList.add('show');
+                    }, 100);
+                    
+                    hiddenNotifications--;
+                    hiddenNotificationCount.textContent = hiddenNotifications;
+                    
+                    if (hiddenNotifications <= 0) {
+                        notificationSummary.style.display = 'none';
+                    }
+                }
+            });
+            
+            toast._bsToast = bsToast;
+            return bsToast;
+        }
+        
+        // Özet bildirime tıklandığında tüm bildirimleri göster
+        document.getElementById('notificationSummary').addEventListener('click', function() {
+            // Bildirim konteynerini tam ekran olarak göster
+            document.querySelector('.toast-container').style.maxHeight = '80vh';
+            
+            // Gizli bildirimleri göster
+            const hiddenToasts = document.querySelectorAll('.toast.hidden-toast');
+            hiddenToasts.forEach(toast => {
+                toast.classList.remove('hidden-toast');
+                toast.classList.add('show');
+                
+                // Bootstrap Toast instance oluştur
+                const bsToast = new bootstrap.Toast(toast, {
+                    autohide: true,
+                    delay: 8000
+                });
+                
+                // Progress bar animasyonu
+                const progressBar = toast.querySelector('.toast-progress-bar');
+                if (progressBar) {
+                    progressBar.style.transition = 'width 8000ms linear';
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                    }, 100);
+                }
+                
+                toast._bsToast = bsToast;
+            });
+            
+            // Özet bildirimi gizle
+            this.style.display = 'none';
+            hiddenNotifications = 0;
+        });
+        
+        // Ses çalma fonksiyonu (Kullanıcı etkileşimi sonrasında çalıştırılabilir)
+        let alertSound = null;
+        let audioInitialized = false;
+
+        function initializeAudio() {
+            if (audioInitialized) return true;
+            
+            try {
+                alertSound = document.getElementById('alertSound');
+                
+                // Ses seviyesini ayarla
+                alertSound.volume = 0.8;
+                
+                // Önceden yükle (tarayıcının izni olduğu sürece)
+                alertSound.load();
+                
+                audioInitialized = true;
+                return true;
+            } catch (e) {
+                console.error('Ses başlatma hatası:', e);
+                return false;
+            }
+        }
+
+        function playAlertSound() {
+            try {
+                if (!audioInitialized && !initializeAudio()) {
+                    return false;
+                }
+                
+                // Sesi başa sar ve çal
+                alertSound.currentTime = 0;
+                
+                // Ses çalma promise ile dönüyor, başarısız olursa silent fail
+                const playPromise = alertSound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Ses otomatik çalınamadı (tarayıcı kısıtlaması):', error);
+                    });
+                }
+                
+                return true;
+            } catch (e) {
+                console.error('Ses çalma hatası:', e);
+                return false;
+            }
+        }
+        
+        // Sayfa etkileşimi ile ses API'sini başlatmak için
+        function enableSound() {
+            // Kullanıcı etkileşimi ile ses API'sini etkinleştir
+            if (!audioInitialized) {
+                initializeAudio();
+                
+                // Kısa bir ses çal ve hemen durdur (ses API'sini etkinleştirmek için)
+                alertSound.volume = 0.1;
+                alertSound.play().then(() => {
+                    alertSound.pause();
+                    alertSound.currentTime = 0;
+                    alertSound.volume = 0.8;
+                    console.log('Ses API etkinleştirildi');
+                }).catch(e => {
+                    console.log('Ses API etkinleştirilemedi:', e);
+                });
+            }
+        }
+        
+        // Sayfa etkileşimlerinde ses API'sini etkinleştir
+        document.addEventListener('click', enableSound, { once: true });
+        document.addEventListener('keydown', enableSound, { once: true });
+        
+        // SharedWorker ile WebSocket bağlantısı
+        let socketWorker = null;
+        
+        function setupWebSocketWorker() {
+            try {
+                // SharedWorker oluştur
+                socketWorker = new SharedWorker("{% static 'js/websocket-worker.js' %}");
+                
+                // Worker mesajları
+                socketWorker.port.onmessage = function(e) {
+                    const message = e.data;
+                    
+                    if (message.type === "anomaly_alert") {
+                        handleAnomalyAlert(message.data);
+                    }
+                    else if (message.type === "connection_status") {
+                        console.log("WebSocket connection status:", message.status);
+                    }
+                };
+                
+                // Worker'a bağlantı kur mesajı gönder
+                socketWorker.port.postMessage({
+                    type: "connect"
+                });
+                
+                // Sayfa kapatılırken temizle
+                window.addEventListener('beforeunload', function() {
+                    if (socketWorker) {
+                        socketWorker.port.close();
+                    }
+                });
+                
+                console.log("WebSocket Worker started");
+                
+            } catch (error) {
+                console.error("WebSocket Worker error:", error);
+                
+                // Worker desteklenmiyorsa normal WebSocket'e geri dön
+                if (error.name === "SecurityError" || error.name === "ReferenceError") {
+                    console.log("SharedWorker is not supported, falling back to normal WebSocket");
+                    // Normal WebSocket bağlantısı kur
+                    setupWebSocket();
+                }
+            }
+        }
+        
+        // Normal WebSocket bağlantısı (fallback)
+        let socket = null;
+        
+        function setupWebSocket() {
+            // WebSocket URL'ini oluştur
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const wsUrl = `${wsProtocol}${window.location.host}/ws/anomaly_alerts/`;
+            
+            // WebSocket bağlantısını kur
+            socket = new WebSocket(wsUrl);
+            
+            // Bağlantı açıldığında
+            socket.onopen = function(e) {
+                console.log('WebSocket connection established');
+            };
+            
+            // Mesaj alındığında
+            socket.onmessage = function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    handleAnomalyAlert(data);
+                } catch (error) {
+                    console.error('WebSocket message processing error:', error);
+                }
+            };
+            
+            // Bağlantı hatası
+            socket.onerror = function(e) {
+                console.error('WebSocket error:', e);
+            };
+            
+            // Bağlantı kapandığında
+            socket.onclose = function(e) {
+                console.log('WebSocket connection closed. Reconnecting in 5 seconds...');
+                // Bağlantıyı yeniden kur
+                setTimeout(setupWebSocket, 5000);
+            };
+        }
+        
+        // Anomali uyarılarını işleme
+        function handleAnomalyAlert(data) {
+            // Ses çal
+            playAlertSound();
+            
+            // Risk seviyesine göre uyarı tipi belirle
+            let toastType = 'warning';
+            if (data.risk_level === 'High') {
+                toastType = 'danger';
+            } else if (data.risk_level === 'Medium') {
+                toastType = 'warning';
+            } else if (data.risk_level === 'Low') {
+                toastType = 'warning';
+            }
+            
+            // Uyarı mesajını oluştur
+            const title = `Anomaly Detected: ${data.attack_type}`;
+            const message = `
+                <div class="d-flex flex-column">
+                    <div><strong>Time:</strong> ${data.timestamp}</div>
+                    <div><strong>IP:</strong> ${data.ip}</div>
+                    <div><strong>URL:</strong> ${data.url}</div>
+                    <div><strong>Risk:</strong> <span class="text-${toastType === 'danger' ? 'danger' : toastType}">${data.risk_level}</span></div>
+                    <div class="mt-2">
+                        <a href="/dashboard/anomalies/" class="btn btn-sm btn-primary">View Anomalies</a>
+                    </div>
+                </div>
+            `;
+            
+            // Toast'u göster
+            createToast(title, message, toastType, 10000);
+        }
+        
+        // Sayfa yüklendiğinde WebSocket bağlantısını başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ses API'sini başlat
+            initializeAudio();
+            
+            // SharedWorker ile WebSocket bağlantısı kur
+            setupWebSocketWorker();
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

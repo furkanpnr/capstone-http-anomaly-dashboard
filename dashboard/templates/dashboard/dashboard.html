@@ -6,7 +6,7 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>HTTP Request Analysis</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>24-Hour HTTP Request Analysis</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="requestChart" height="250"></canvas>
@@ -16,7 +16,7 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Detected Anomalies</h5>
+                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Attack Type Distribution</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="anomalyChart" height="250"></canvas>
@@ -29,7 +29,10 @@
         <div class="col-md-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Recent Anomaly Records</h5>
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-table me-2"></i>Recent Anomaly Records
+                        <small class="text-muted">(Last 5 Records)</small>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -44,27 +47,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for log in recent_anomalies %}
                                 <tr>
-                                    <td>192.168.1.105</td>
-                                    <td>POST</td>
-                                    <td>/api/users</td>
-                                    <td><span class="badge bg-danger">Anomaly</span></td>
-                                    <td>08/10/2023 14:25</td>
+                                    <td>{{ log.ip }}</td>
+                                    <td>{{ log.method }}</td>
+                                    <td>{{ log.url }}</td>
+                                    <td>
+                                        {% if log.label == 'normal' %}
+                                            <span class="badge bg-success">Normal</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ log.get_label_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.timestamp|date:"d/m/Y H:i" }}</td>
                                 </tr>
+                                {% empty %}
                                 <tr>
-                                    <td>192.168.1.108</td>
-                                    <td>GET</td>
-                                    <td>/admin/config</td>
-                                    <td><span class="badge bg-danger">Anomaly</span></td>
-                                    <td>08/10/2023 13:05</td>
+                                    <td colspan="5" class="text-center">No anomaly records found</td>
                                 </tr>
-                                <tr>
-                                    <td>192.168.1.110</td>
-                                    <td>GET</td>
-                                    <td>/api/products</td>
-                                    <td><span class="badge bg-success">Normal</span></td>
-                                    <td>08/10/2023 12:45</td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -79,27 +80,27 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
                         <div class="me-3">
-                            <i class="fas fa-exclamation-circle text-warning fa-2x"></i>
+                            <i class="fas fa-exclamation-circle {{ threat_icon_class }} fa-2x"></i>
                         </div>
                         <div>
-                            <h6 class="mb-0">Medium Level Threat</h6>
+                            <h6 class="mb-0">{{ threat_level }}</h6>
                             <small class="text-muted">In the last 24 hours</small>
                         </div>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Normal Requests</span>
-                        <span>85%</span>
+                        <span>{{ normal_percentage }}%</span>
                     </div>
                     <div class="progress mb-3" style="height: 8px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ normal_percentage }}%"></div>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Suspicious Requests</span>
-                        <span>15%</span>
+                        <span>{{ suspicious_percentage }}%</span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 15%"></div>
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ suspicious_percentage }}%"></div>
                     </div>
                 </div>
             </div>
@@ -113,28 +114,67 @@
     document.addEventListener('DOMContentLoaded', function() {
         // HTTP Request chart
         const requestCtx = document.getElementById('requestChart').getContext('2d');
+        const gradient = requestCtx.createLinearGradient(0, 0, 0, 250);
+        gradient.addColorStop(0, 'rgba(15, 98, 254, 0.2)');
+        gradient.addColorStop(1, 'rgba(15, 98, 254, 0)');
+
         new Chart(requestCtx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`),
                 datasets: [{
                     label: 'Requests',
-                    data: Array.from({length: 24}, () => Math.floor(Math.random() * 80) + 20),
+                    data: {{ hourly_requests|safe }},
                     borderColor: '#0f62fe',
-                    backgroundColor: 'rgba(15, 98, 254, 0.1)',
+                    backgroundColor: gradient,
                     fill: true,
                     tension: 0.4,
                     borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 4
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0f62fe',
+                    pointHoverBackgroundColor: '#0f62fe',
+                    pointHoverBorderColor: '#ffffff'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#d1d5db',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        cornerRadius: 8
                     }
                 },
                 scales: {
@@ -143,15 +183,27 @@
                             display: false
                         },
                         ticks: {
-                            color: '#d1d5db'
+                            color: '#d1d5db',
+                            font: {
+                                size: 11
+                            }
                         }
                     },
                     y: {
+                        beginAtZero: true,
                         grid: {
                             color: 'rgba(255, 255, 255, 0.05)'
                         },
                         ticks: {
-                            color: '#d1d5db'
+                            color: '#d1d5db',
+                            font: {
+                                size: 11
+                            },
+                            callback: function(value) {
+                                if (Math.floor(value) === value) {
+                                    return value;
+                                }
+                            }
                         }
                     }
                 }
@@ -163,45 +215,85 @@
         new Chart(anomalyCtx, {
             type: 'bar',
             data: {
-                labels: ['SQL Injection', 'XSS', 'Path Traversal', 'Command Injection', 'DoS'],
+                labels: {{ attack_distribution.labels|safe }},
                 datasets: [{
                     label: 'Detection Count',
-                    data: [12, 19, 8, 5, 14],
+                    data: {{ attack_distribution.data|safe }},
                     backgroundColor: [
-                        'rgba(220, 53, 69, 0.7)',  // Danger
-                        'rgba(255, 193, 7, 0.7)',  // Warning
-                        'rgba(13, 110, 253, 0.7)', // Primary
-                        'rgba(108, 117, 125, 0.7)', // Secondary
-                        'rgba(220, 53, 69, 0.7)'   // Danger
+                        'rgba(220, 53, 69, 0.85)',   // SQL Injection
+                        'rgba(255, 193, 7, 0.85)',   // XSS
+                        'rgba(13, 110, 253, 0.85)',  // Command Injection
+                        'rgba(25, 135, 84, 0.85)',   // Path Traversal
+                        'rgba(102, 16, 242, 0.85)'   // Other
                     ],
                     borderColor: [
                         'rgb(220, 53, 69)',
                         'rgb(255, 193, 7)',
                         'rgb(13, 110, 253)',
-                        'rgb(108, 117, 125)',
-                        'rgb(220, 53, 69)'
+                        'rgb(25, 135, 84)',
+                        'rgb(102, 16, 242)'
                     ],
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 35
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return `Detected: ${context.raw} times`;
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: {
                         grid: {
                             display: false
                         },
                         ticks: {
-                            color: '#d1d5db'
+                            color: '#d1d5db',
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            }
                         }
                     },
                     y: {
+                        beginAtZero: true,
                         grid: {
                             color: 'rgba(255, 255, 255, 0.05)'
                         },
                         ticks: {
-                            color: '#d1d5db'
+                            color: '#d1d5db',
+                            font: {
+                                size: 11
+                            },
+                            stepSize: 1
                         }
                     }
                 }

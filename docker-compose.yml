@@ -39,6 +39,7 @@ services:
     volumes:
       - anomaly_static_data:/app/staticfiles
       - /data/compose/1/nginx-logs:/mnt/nginx-logs:ro
+      - ./ml_model:/app/ml_model
     networks:
       - anomaly_network
 

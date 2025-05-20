@@ -34,6 +34,8 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       LOG_TYPE: ${LOG_TYPE}
       HTTP_LOG_PATH: ${HTTP_LOG_PATH}
+      ML_MODEL_NAME: ${ML_MODEL_NAME}
+      ML_MODEL_PATH: ${ML_MODEL_PATH}
     command: >
       sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 http_anomaly_detector.asgi:application"
     depends_on:

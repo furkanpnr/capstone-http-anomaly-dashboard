@@ -37,7 +37,7 @@ services:
       ML_MODEL_NAME: ${ML_MODEL_NAME}
       ML_MODEL_PATH: ${ML_MODEL_PATH}
     command: >
-      sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 http_anomaly_detector.asgi:application"
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - postgres
     volumes:

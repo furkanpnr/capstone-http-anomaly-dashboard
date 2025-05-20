@@ -20,9 +20,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Models path
-MODELS_DIR = os.path.join(BASE_DIR, 'dashboard', 'ml_model')
+MODELS_DIR = os.path.join(BASE_DIR, 'ml_model')
 # Model related settings
-ML_MODEL_NAME = os.getenv('ML_MODEL_NAME', 'bert_model')  # Default is 'bert_model'
+ML_MODEL_NAME = os.getenv('ML_MODEL_NAME', 'bert')  # Default is 'bert_model'
 ML_MODEL_PATH = os.getenv('ML_MODEL_PATH', os.path.join(MODELS_DIR, ML_MODEL_NAME))
 
 # Quick-start development settings - unsuitable for production

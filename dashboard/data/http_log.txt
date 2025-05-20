@@ -9929,3 +9929,5 @@
 127.0.0.1 - - [19/May/2025:10:01:02 +0000] "GET /api/user?id=1%20UNION%20SELECT%20null,null-- HTTP/1.1" 403 512 "https://test123.com" "Mozilla/5.0"
 127.0.0.1 - - [19/May/2025:10:01:01 +0000] "GET /search?query=abc'; DROP TABLE users; -- HTTP/1.1" 403 512 "https://attacker.site" "Mozilla/5.0"
 127.0.0.1 - - [19/May/2025:10:01:02 +0000] "GET /api/user?id=1%20UNION%20SELECT%20null,null-- HTTP/1.1" 403 512 "https://test123.com" "Mozilla/5.0"
+127.0.0.1 - - [19/May/2025:10:01:01 +0000] "GET /search?query=abc'; DROP TABLE users; -- HTTP/1.1" 403 512 "https://attacker.site" "Mozilla/5.0"
+127.0.0.1 - - [19/May/2025:10:01:02 +0000] "GET /api/user?id=1%20UNION%20SELECT%20null,null-- HTTP/1.1" 403 512 "https://test123.com" "Mozilla/5.0"

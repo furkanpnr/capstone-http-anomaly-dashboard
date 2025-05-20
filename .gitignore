@@ -52,7 +52,7 @@ coverage.xml
 cover/
 
 # models
-ml_models/
+ml_model/
 
 
 # Translations

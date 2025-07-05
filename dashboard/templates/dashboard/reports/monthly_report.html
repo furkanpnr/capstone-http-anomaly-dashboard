@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body">
                     <form method="get" class="row mb-4">
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-lg-8 mb-3 mb-md-0">
                             <div class="form-group">
                                 <label for="monthPicker" class="form-label">Select Month</label>
                                 <div class="input-group">
@@ -18,7 +18,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-4 col-lg-4 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-sync-alt me-2"></i>Generate Report
                             </button>
@@ -26,7 +26,7 @@
                     </form>
                     
                     <div class="row mb-4">
-                        <div class="col-md-3 mb-4">
+                        <div class="col-6 col-md-3 mb-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-primary mb-2">{{ total_requests }}</h3>
@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-6 col-md-3 mb-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-danger mb-2">{{ anomaly_logs }}</h3>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-6 col-md-3 mb-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-warning mb-2">{{ anomaly_rate }}%</h3>
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-6 col-md-3 mb-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
                                     <h3 class="text-success mb-2">{{ normal_rate }}%</h3>
@@ -61,7 +61,7 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-8 mb-4">
+                        <div class="col-md-12 col-lg-8 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Monthly Traffic and Anomaly Trend</h6>
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-4">
+                        <div class="col-md-12 col-lg-4 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Risk Level Distribution</h6>
@@ -84,7 +84,7 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-12 col-lg-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Most Targeted Endpoints</h6>
@@ -102,7 +102,7 @@
                                             <tbody>
                                                 {% for endpoint in targeted_endpoints %}
                                                 <tr>
-                                                    <td>{{ endpoint.url }}</td>
+                                                    <td class="text-break">{{ endpoint.url }}</td>
                                                     <td>{{ endpoint.anomaly_count }}</td>
                                                     <td>{{ endpoint.rate }}%</td>
                                                 </tr>
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-12 col-lg-6 mb-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Most Active Attacking IPs</h6>
@@ -159,6 +159,9 @@
         const dailyTrendData = JSON.parse(document.getElementById('daily-trend-data').textContent);
         const riskData = JSON.parse(document.getElementById('risk-data').textContent);
 
+        // Responsive grafik ayarları
+        const isMobile = window.innerWidth < 768;
+
         // Monthly Trend Chart
         const monthlyTrendCtx = document.getElementById('monthlyTrend').getContext('2d');
         new Chart(monthlyTrendCtx, {
@@ -170,13 +173,17 @@
                     data: dailyTrendData.map(item => item.total),
                     borderColor: 'rgb(54, 162, 235)',
                     backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    fill: true
+                    fill: true,
+                    pointRadius: isMobile ? 3 : 4,
+                    borderWidth: 2
                 }, {
                     label: 'Anomalies',
                     data: dailyTrendData.map(item => item.anomalies),
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                    fill: true
+                    fill: true,
+                    pointRadius: isMobile ? 3 : 4,
+                    borderWidth: 2
                 }]
             },
             options: {
@@ -184,7 +191,30 @@
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: !isMobile,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: isMobile ? 45 : 0,
+                            autoSkip: true,
+                            autoSkipPadding: isMobile ? 20 : 10,
+                            font: {
+                                size: isMobile ? 9 : 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: isMobile ? 12 : 40,
+                            padding: isMobile ? 8 : 20
+                        }
                     }
                 }
             }
@@ -211,7 +241,14 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'right'
+                        position: isMobile ? 'bottom' : 'right',
+                        labels: {
+                            boxWidth: isMobile ? 12 : 15,
+                            padding: isMobile ? 8 : 20,
+                            font: {
+                                size: isMobile ? 10 : 12
+                            }
+                        }
                     }
                 }
             }
@@ -220,6 +257,13 @@
         // Form submit on month change
         document.getElementById('monthPicker').addEventListener('change', function() {
             this.form.submit();
+        });
+        
+        // Pencere boyutu değiştiğinde grafikleri yeniden oluştur
+        window.addEventListener('resize', function() {
+            setTimeout(function() {
+                location.reload();
+            }, 500);
         });
     });
 </script>

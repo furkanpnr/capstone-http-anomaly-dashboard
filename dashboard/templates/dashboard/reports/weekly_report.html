@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-md-12 mb-4">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-chart-bar me-2"></i>Weekly Report ({{ week_start|date:"M d" }} - {{ week_end|date:"M d, Y" }})
                     </h5>
                     <div class="d-flex gap-2">
-                        <form method="get" class="d-flex gap-2">
+                        <form method="get" class="d-flex gap-2 flex-wrap">
                             <input type="week" class="form-control" id="weekPicker" name="week" value="{{ week_value }}">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-sync-alt me-2"></i>Generate
@@ -21,7 +21,7 @@
                 
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3 mb-3 mb-md-0">
                             <div class="card bg-primary text-white h-100">
                                 <div class="card-body text-center">
                                     <h3 class="mb-2">{{ total_requests }}</h3>
@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3 mb-3 mb-md-0">
                             <div class="card bg-danger text-white h-100">
                                 <div class="card-body text-center">
                                     <h3 class="mb-2">{{ anomaly_logs }}</h3>
@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3">
                             <div class="card bg-warning text-white h-100">
                                 <div class="card-body text-center">
                                     <h3 class="mb-2">{{ anomaly_rate }}%</h3>
@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3">
                             <div class="card bg-success text-white h-100">
                                 <div class="card-body text-center">
                                     <h3 class="mb-2">{{ normal_rate }}%</h3>
@@ -56,7 +56,7 @@
                     </div>
                     
                     <div class="row mb-4">
-                        <div class="col-md-8">
+                        <div class="col-md-12 col-lg-8 mb-4 mb-lg-0">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Daily Traffic Trend</h6>
@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-12 col-lg-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Risk Level Distribution</h6>
@@ -79,7 +79,7 @@
                     </div>
                     
                     <div class="row mb-4">
-                        <div class="col-md-6">
+                        <div class="col-md-12 col-lg-6 mb-4 mb-lg-0">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Most Targeted URLs</h6>
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12 col-lg-6">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Top Attacking IPs</h6>
@@ -204,6 +204,9 @@ document.addEventListener('DOMContentLoaded', function() {
     Chart.defaults.color = '#6c757d';
     Chart.defaults.font.family = "'Inter', sans-serif";
     
+    // Responsive grafik ayarları
+    const isMobile = window.innerWidth < 768;
+    
     // Daily Traffic Trend Chart
     const trendCtx = document.getElementById('trafficTrend').getContext('2d');
     const trendData = JSON.parse(document.getElementById('daily-trend').textContent);
@@ -220,8 +223,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fill: true,
                 tension: 0.4,
                 borderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6,
+                pointRadius: isMobile ? 3 : 4,
+                pointHoverRadius: isMobile ? 5 : 6,
                 yAxisID: 'y'
             }, {
                 label: 'Anomalies',
@@ -231,8 +234,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fill: true,
                 tension: 0.4,
                 borderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6,
+                pointRadius: isMobile ? 3 : 4,
+                pointHoverRadius: isMobile ? 5 : 6,
                 yAxisID: 'y1'
             }]
         },
@@ -249,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: true,
                     position: 'left',
                     title: {
-                        display: true,
+                        display: !isMobile,
                         text: 'Total Requests'
                     }
                 },
@@ -258,17 +261,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: true,
                     position: 'right',
                     title: {
-                        display: true,
+                        display: !isMobile,
                         text: 'Anomalies'
                     },
                     grid: {
                         drawOnChartArea: false
                     }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: isMobile ? 45 : 0,
+                        autoSkip: true,
+                        autoSkipPadding: isMobile ? 20 : 10
+                    }
                 }
             },
             plugins: {
                 legend: {
-                    position: 'top'
+                    position: 'top',
+                    labels: {
+                        boxWidth: isMobile ? 12 : 40,
+                        padding: isMobile ? 10 : 20
+                    }
                 }
             }
         }
@@ -297,7 +311,11 @@ document.addEventListener('DOMContentLoaded', function() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'right'
+                    position: isMobile ? 'bottom' : 'right',
+                    labels: {
+                        boxWidth: isMobile ? 12 : 15,
+                        padding: isMobile ? 10 : 20
+                    }
                 }
             }
         }
@@ -306,6 +324,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submit on week change
     document.getElementById('weekPicker').addEventListener('change', function() {
         this.form.submit();
+    });
+    
+    // Pencere boyutu değiştiğinde grafikleri yeniden oluştur
+    window.addEventListener('resize', function() {
+        setTimeout(function() {
+            location.reload();
+        }, 500);
     });
 });
 </script>

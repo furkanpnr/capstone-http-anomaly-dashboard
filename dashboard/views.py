@@ -60,7 +60,7 @@ def home_view(request):
     initialize_analyzer()
     return render(request, 'dashboard/home.html')
 
-@login_required
+# @login_required
 def dashboard_view(request):
     """View for the main dashboard page with real-time analytics"""
     

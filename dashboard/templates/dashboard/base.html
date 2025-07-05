@@ -13,6 +13,7 @@
             overflow-y: auto;
             padding-right: 5px;
             scrollbar-width: thin;
+            max-width: 350px;
         }
         
         .toast-container::-webkit-scrollbar {
@@ -166,6 +167,30 @@
         .notification-summary:hover {
             background: #2563EB;
         }
+        
+        /* Responsive stillemeler */
+        @media (max-width: 767.98px) {
+            .toast-container {
+                top: 75px;
+                right: 10px;
+                left: 10px;
+                max-width: calc(100% - 20px);
+                padding-right: 0;
+            }
+            
+            .toast {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .notification-summary {
+                right: 10px;
+                left: 10px;
+                bottom: 10px;
+                text-align: center;
+                width: calc(100% - 20px);
+            }
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -262,6 +287,60 @@
             const notificationSummary = document.getElementById('notificationSummary');
             const hiddenNotificationCount = document.getElementById('hiddenNotificationCount');
             
+            // HTML içeriği güvenli hale getirmek için yardımcı fonksiyon
+            function createSafeToastElement(title, message, type, isHidden = false) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}` + (isHidden ? ' hidden-toast' : '');
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                
+                // Toast header elementleri
+                const header = document.createElement('div');
+                header.className = 'toast-header';
+                
+                let iconClass = 'fa-exclamation-circle';
+                if (type === 'success') iconClass = 'fa-check-circle';
+                if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+                if (type === 'danger') iconClass = 'fa-shield-alt';
+                
+                const icon = document.createElement('i');
+                icon.className = `fas ${iconClass} me-2`;
+                
+                const strong = document.createElement('strong');
+                strong.className = 'me-auto';
+                strong.textContent = title;
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'btn-close';
+                closeBtn.setAttribute('type', 'button');
+                closeBtn.setAttribute('data-bs-dismiss', 'toast');
+                closeBtn.setAttribute('aria-label', 'Close');
+                
+                header.appendChild(icon);
+                header.appendChild(strong);
+                header.appendChild(closeBtn);
+                toast.appendChild(header);
+                
+                // Toast body - burada message HTML içerebilir ama güvenli olduğunu varsayıyoruz
+                const body = document.createElement('div');
+                body.className = 'toast-body';
+                body.innerHTML = message; // Bu noktada message HTML olarak yorumlanacak
+                toast.appendChild(body);
+                
+                // Progress bar
+                const progress = document.createElement('div');
+                progress.className = 'toast-progress';
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'toast-progress-bar';
+                
+                progress.appendChild(progressBar);
+                toast.appendChild(progress);
+                
+                return toast;
+            }
+            
             // Bildirimleri grupla
             const groupKey = title; // Başlığa göre grupla
             
@@ -320,30 +399,7 @@
                 notificationSummary.style.display = 'block';
                 
                 // Gizli bir bildirim oluştur ama gösterme
-                const hiddenToast = document.createElement('div');
-                hiddenToast.className = `toast ${type} hidden-toast`;
-                hiddenToast.setAttribute('role', 'alert');
-                hiddenToast.setAttribute('aria-live', 'assertive');
-                hiddenToast.setAttribute('aria-atomic', 'true');
-                
-                let iconClass = 'fa-exclamation-circle';
-                if (type === 'success') iconClass = 'fa-check-circle';
-                if (type === 'warning') iconClass = 'fa-exclamation-triangle';
-                if (type === 'danger') iconClass = 'fa-shield-alt';
-                
-                hiddenToast.innerHTML = `
-                    <div class="toast-header">
-                        <i class="fas ${iconClass} me-2"></i>
-                        <strong class="me-auto">${title}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <div class="toast-progress">
-                        <div class="toast-progress-bar"></div>
-                    </div>
-                `;
+                const hiddenToast = createSafeToastElement(title, message, type, true);
                 
                 // Gizli bildirimi ekle ama gösterme
                 toastContainer.appendChild(hiddenToast);
@@ -354,32 +410,8 @@
                 return null;
             }
             
-            // Toast HTML'ini oluştur
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            let iconClass = 'fa-exclamation-circle';
-            if (type === 'success') iconClass = 'fa-check-circle';
-            if (type === 'warning') iconClass = 'fa-exclamation-triangle';
-            if (type === 'danger') iconClass = 'fa-shield-alt';
-            
-            toast.innerHTML = `
-                <div class="toast-header">
-                    <i class="fas ${iconClass} me-2"></i>
-                    <strong class="me-auto">${title}</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <div class="toast-progress">
-                    <div class="toast-progress-bar"></div>
-                </div>
-            `;
-            
+            // Normal toast oluştur
+            const toast = createSafeToastElement(title, message, type);
             toastContainer.appendChild(toast);
             
             // Bu grubu kaydet
@@ -657,14 +689,45 @@
                 toastType = 'warning';
             }
             
+            // Modalde görüntülemek için anomali bilgilerini hazırla
+            const anomalyId = data.id;
+            
+            // Eğer anomalyId tanımlıysa, popup'ı otomatik olarak açacağız
+            if (anomalyId) {
+                // Anomali detaylarını popup'da görüntüle
+                try {
+                    if (typeof showAnomalyDetails === 'function') {
+                        // showAnomalyDetails fonksiyonu varsa, çağır
+                        showAnomalyDetails(anomalyId);
+                        
+                        // Popup açılacağı için toast bildirimi gösterme
+                        return;
+                    }
+                } catch (e) {
+                    console.log('showAnomalyDetails fonksiyonu bulunamadı, toast kullanılacak');
+                }
+            }
+            
+            // HTML içeriği güvenli hale getirmek için yardımcı fonksiyon
+            function escapeHtml(unsafe) {
+                if (!unsafe) return '';
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+            
+            // showAnomalyDetails fonksiyonu yoksa veya ID bilgisi yoksa toast göster
             // Uyarı mesajını oluştur
-            const title = `Anomaly Detected: ${data.attack_type}`;
+            const title = `Anomaly Detected: ${escapeHtml(data.attack_type)}`;
             const message = `
                 <div class="d-flex flex-column">
-                    <div><strong>Time:</strong> ${data.timestamp}</div>
-                    <div><strong>IP:</strong> ${data.ip}</div>
-                    <div><strong>URL:</strong> ${data.url}</div>
-                    <div><strong>Risk:</strong> <span class="text-${toastType === 'danger' ? 'danger' : toastType}">${data.risk_level}</span></div>
+                    <div><strong>Time:</strong> ${escapeHtml(data.timestamp)}</div>
+                    <div><strong>IP:</strong> ${escapeHtml(data.ip)}</div>
+                    <div><strong>URL:</strong> ${escapeHtml(data.url)}</div>
+                    <div><strong>Risk:</strong> <span class="text-${toastType === 'danger' ? 'danger' : toastType}">${escapeHtml(data.risk_level)}</span></div>
                     <div class="mt-2">
                         <a href="/dashboard/anomalies/" class="btn btn-sm btn-primary">View Anomalies</a>
                     </div>

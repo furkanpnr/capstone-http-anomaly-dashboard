@@ -28,6 +28,9 @@ html, body {
 
 .container-fluid {
     flex: 1 0 auto;
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .flex-grow-1 {
@@ -44,7 +47,7 @@ html, body {
     background-color: var(--bg-navbar-dark);
     box-shadow: var(--shadow-sm);
     z-index: 1001;
-    padding: 0 1.5rem;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -133,7 +136,7 @@ html, body {
 
 /* Ana içerik alanı */
 .main-content {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
     transition: all var(--transition-normal);
     min-height: calc(100vh - var(--navbar-height));
     display: flex;
@@ -242,6 +245,7 @@ html, body {
     box-shadow: var(--shadow-sm);
     margin-bottom: 1rem;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    overflow: hidden;
 }
 
 .card:hover {
@@ -418,25 +422,128 @@ a:hover {
     text-decoration: none;
 }
 
-/* Responsive */
+/* Responsive Düzenlemeler - Mobil */
 @media (max-width: 767.98px) {
     .sidebar {
-        width: 280px;
-        transform: translateX(-100%);
+        width: 100%;
+        transition: transform 0.3s ease;
     }
+    
     .sidebar:not(.hidden) {
         transform: translateX(0);
     }
-    /* Mobilde sidebar açıkken ana içerik tam genişlikte kalır */
+    
     .sidebar:not(.hidden) + .main-content {
         margin-left: 0;
         width: 100%;
     }
+    
     .main-content {
+        padding: 1rem;
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .navbar {
+        padding: 0 0.75rem;
+    }
+    
+    .navbar-brand span {
+        font-size: 0.9rem;
+    }
+    
+    .navbar .user-dropdown span {
+        display: none;
+    }
+    
+    .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    
+    .card {
+        margin-bottom: 0.75rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .toast-container {
+        right: 10px;
+        left: 10px;
+        max-width: calc(100% - 20px);
+    }
+    
+    .toast {
+        min-width: auto;
         width: 100%;
     }
-    .navbar {
-        padding: 0 1rem;
+}
+
+/* Tablolar için responsive düzenleme */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        border: 0;
+    }
+    
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .card.overflow-auto {
+        overflow: hidden !important;
+    }
+    
+    .card .table-responsive {
+        max-height: 400px;
+    }
+}
+
+/* Grafikler için responsive düzenleme */
+@media (max-width: 767.98px) {
+    .chart-container, .chart-wrapper {
+        height: auto !important;
+        min-height: 300px;
+    }
+}
+
+/* Form elemanları için responsive düzenleme */
+@media (max-width: 767.98px) {
+    .form-control, .form-select, .input-group {
+        font-size: 16px; /* iOS'ta zoom sorununu önlemek için */
+    }
+    
+    .input-group {
+        flex-wrap: wrap;
+    }
+    
+    .input-group > .btn, 
+    .input-group > .form-control,
+    .input-group > .form-select {
+        flex: 1 1 auto;
+        width: auto;
+    }
+}
+
+/* Footer için responsive düzenleme */
+@media (max-width: 767.98px) {
+    .footer {
+        text-align: center;
+        padding: 1rem 0;
+    }
+    
+    .footer .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer .ms-auto {
+        margin-left: 0 !important;
+        margin-top: 0.5rem;
     }
 }
 

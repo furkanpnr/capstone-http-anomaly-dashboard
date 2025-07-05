@@ -5,19 +5,29 @@
             <button id="sidebarCollapseBtn" class="btn">
                 <i class="fas fa-bars"></i>
             </button>
-            <a class="navbar-brand ms-3" href="{% url 'home' %}">
-                <i class="fas fa-shield-virus me-2"></i>
+            <a class="navbar-brand ms-2 ms-sm-3" href="{% url 'home' %}">
+                <i class="fas fa-shield-virus me-1 me-sm-2"></i>
                 <span class="fw-bold">ML</span> <span class="text-primary fw-bold">GUARDIAN</span>
             </a>
         </div>
         <div class="d-flex align-items-center">
-            <div class="me-3">
+            <div class="me-2 me-sm-3">
                 <i class="fas fa-bell notification-icon"></i>
             </div>
             <div class="dropdown">
                 <div class="user-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user me-2 text-dark"></i>
-                    <span class="terminal-text">{{ request.user.email|default:request.user.username }}</span>
+                    <span class="terminal-text d-none d-sm-inline">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.username %}
+                                {{ request.user.username }}
+                            {% else %}
+                                {{ request.user.email }}
+                            {% endif %}
+                        {% else %}
+                            admin
+                        {% endif %}
+                    </span>
                     <i class="fas fa-chevron-down ms-2"></i>
                 </div>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -79,5 +89,28 @@
 
 .notification-icon:hover {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive düzenlemeler */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .navbar-brand i {
+        font-size: 1rem;
+    }
+    
+    #sidebarCollapseBtn {
+        padding: 0.25rem;
+    }
+    
+    .notification-icon {
+        padding: 0.35rem;
+    }
+    
+    .user-dropdown {
+        padding: 0.35rem;
+    }
 }
 </style> 

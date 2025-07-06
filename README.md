@@ -76,7 +76,40 @@ git clone https://github.com/furkanpnr/mlguardian.git
 cd mlguardian
 ```
 
-### 2.  Build and Run with Docker Compose
+
+### 2.  Environment Configuration
+Before running the project, copy the example environment file and configure your settings:
+
+```bash
+SECRET_KEY=<your-django-secret-key>
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS=False
+CORS_ALLOWED_ORIGINS='http://localhost:3000'
+CSRF_TRUSTED_ORIGINS='http://localhost:8000'
+
+# Use SQLite for local dev or PostgreSQL for production
+USE_POSTGRES=False
+
+# PostgreSQL Config (used when USE_POSTGRES=True)
+POSTGRES_DB=mlguardian_db
+POSTGRES_USER=mlguardian_user
+POSTGRES_PASSWORD=securepassword
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+
+# Log format type: 'apache' or 'nginx'
+LOG_TYPE=apache
+
+# Path to the HTTP log file to be scanned
+HTTP_LOG_PATH=/app/logs/access.log
+
+```
+
+
+### 3.  Build and Run with Docker Compose
 
 ```bash
 docker-compose up --build
@@ -94,13 +127,13 @@ This will:
 
 
 
-### 3. Create Superuser
+### 4. Create Superuser
 
 ```bash
 docker exec web python manage.py createsuperuser
 ```
 
-### 4.  Access the Application
+### 5.  Access the Application
 
 Once running, open your browser and go to:
 

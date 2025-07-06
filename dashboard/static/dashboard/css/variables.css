@@ -53,4 +53,13 @@
     /* Geçişler */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s ease;
+}
+
+/* Mobil cihazlar için değişkenler */
+@media (max-width: 767.98px) {
+    :root {
+        --sidebar-width: 100%; /* Mobilde tam genişlik */
+        --navbar-height: 56px; /* Daha küçük navbar */
+        --card-border-radius: 6px; /* Daha küçük köşe yuvarlaklığı */
+    }
 } 

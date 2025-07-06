@@ -19,6 +19,11 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Models path
+MODELS_DIR = os.path.join(BASE_DIR, 'ml_model')
+# Model related settings
+ML_MODEL_NAME = os.getenv('ML_MODEL_NAME', 'bert')  # Default is 'bert_model'
+ML_MODEL_PATH = os.getenv('ML_MODEL_PATH', os.path.join(MODELS_DIR, ML_MODEL_NAME))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -40,9 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'dashboard',
+    'tailwind',
     'theme',
+    'django_browser_reload',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +93,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'http_anomaly_detector.wsgi.application'
+ASGI_APPLICATION = 'http_anomaly_detector.asgi.application'
+
+# Channels katmanları
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
@@ -151,6 +167,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+# Statik dosyaların toplanacağı dizin
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -170,3 +189,7 @@ if os.getenv('SECURE_HTTP', default='False').lower() in ['true', '1', 't']:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+
+# log reader config
+LOG_TYPE = os.getenv('LOG_TYPE', default='apache')

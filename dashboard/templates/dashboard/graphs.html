@@ -3,33 +3,74 @@
 {% block content %}
 <div class="dashboard-container">
     <div class="row">
-        <div class="col-md-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="fas fa-chart-pie me-2"></i>Anomaly Graphs</h5>
+        <!-- HTTP Methods and Status Codes -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exchange-alt me-2"></i>HTTP Methods
+                    </h5>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary active" onclick="toggleChart('methodChart', 'pie')">Pie</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="toggleChart('methodChart', 'doughnut')">Doughnut</button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0">HTTP Method Distribution</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="methodChart" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0">Status Code Distribution</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="statusChart" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="methodChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-server me-2"></i>Status Codes
+                    </h5>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary active" onclick="toggleChart('statusChart', 'bar')">Bar</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="toggleChart('statusChart', 'line')">Line</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Risk Level Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Risk Level Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Attack Sources -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-globe me-2"></i>Top Attack Sources
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="sourceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -40,57 +81,236 @@
 
 {% block extra_js %}
 <script>
+    let charts = {};
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Common chart options
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    cornerRadius: 6
+                }
+            }
+        };
+
         // HTTP Method chart
         const methodCtx = document.getElementById('methodChart').getContext('2d');
-        new Chart(methodCtx, {
+        charts.methodChart = new Chart(methodCtx, {
             type: 'pie',
             data: {
                 labels: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
                 datasets: [{
-                    data: [65, 20, 10, 3, 2],
+                    data: {{ method_distribution.data|safe }},
                     backgroundColor: [
-                        '#0f62fe',
-                        '#24a148',
-                        '#ff832b',
-                        '#da1e28',
-                        '#8a3ffc'
-                    ]
+                        'rgba(15, 98, 254, 0.8)',    // Blue
+                        'rgba(36, 161, 72, 0.8)',    // Green
+                        'rgba(255, 131, 43, 0.8)',   // Orange
+                        'rgba(218, 30, 40, 0.8)',    // Red
+                        'rgba(138, 63, 252, 0.8)'    // Purple
+                    ],
+                    borderColor: [
+                        'rgb(15, 98, 254)',
+                        'rgb(36, 161, 72)',
+                        'rgb(255, 131, 43)',
+                        'rgb(218, 30, 40)',
+                        'rgb(138, 63, 252)'
+                    ],
+                    borderWidth: 1
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
             }
         });
         
         // Status Code chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
-        new Chart(statusCtx, {
+        charts.statusChart = new Chart(statusCtx, {
             type: 'bar',
             data: {
-                labels: ['2xx', '3xx', '4xx', '5xx'],
+                labels: ['2xx Success', '3xx Redirect', '4xx Client Error', '5xx Server Error'],
                 datasets: [{
                     label: 'Status Codes',
-                    data: [75, 10, 12, 3],
+                    data: {{ status_distribution.data|safe }},
                     backgroundColor: [
-                        '#24a148',
-                        '#0f62fe',
-                        '#ff832b',
-                        '#da1e28'
-                    ]
+                        'rgba(36, 161, 72, 0.8)',   // Green for 2xx
+                        'rgba(15, 98, 254, 0.8)',   // Blue for 3xx
+                        'rgba(255, 131, 43, 0.8)',  // Orange for 4xx
+                        'rgba(218, 30, 40, 0.8)'    // Red for 5xx
+                    ],
+                    borderColor: [
+                        'rgb(36, 161, 72)',
+                        'rgb(15, 98, 254)',
+                        'rgb(255, 131, 43)',
+                        'rgb(218, 30, 40)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 50
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonOptions,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Risk Level chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        charts.riskChart = new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['High', 'Medium', 'Low', 'Normal'],
+                datasets: [{
+                    data: {{ risk_distribution.data|safe }},
+                    backgroundColor: [
+                        'rgba(218, 30, 40, 0.8)',    // Red for High
+                        'rgba(255, 131, 43, 0.8)',   // Orange for Medium
+                        'rgba(255, 193, 7, 0.8)',    // Yellow for Low
+                        'rgba(36, 161, 72, 0.8)'     // Green for Normal
+                    ],
+                    borderColor: [
+                        'rgb(218, 30, 40)',
+                        'rgb(255, 131, 43)',
+                        'rgb(255, 193, 7)',
+                        'rgb(36, 161, 72)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '60%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label} Risk: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Source IP chart
+        const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+        charts.sourceChart = new Chart(sourceCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ source_distribution.labels|safe }},
+                datasets: [{
+                    label: 'Attack Count',
+                    data: {{ source_distribution.data|safe }},
+                    backgroundColor: 'rgba(138, 63, 252, 0.8)',
+                    borderColor: 'rgb(138, 63, 252)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 40
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
         });
     });
+
+    // Function to toggle chart types
+    function toggleChart(chartId, newType) {
+        const chart = charts[chartId];
+        const buttons = event.target.parentElement.children;
+        
+        // Update button states
+        Array.from(buttons).forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Save current data and options
+        const data = chart.data;
+        const options = chart.options;
+
+        // Destroy current chart
+        chart.destroy();
+
+        // Create new chart with new type
+        const ctx = document.getElementById(chartId).getContext('2d');
+        charts[chartId] = new Chart(ctx, {
+            type: newType,
+            data: data,
+            options: options
+        });
+    }
 </script>
 {% endblock %} 

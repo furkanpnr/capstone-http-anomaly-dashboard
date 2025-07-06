@@ -76,33 +76,37 @@ git clone https://github.com/furkanpnr/mlguardian.git
 cd mlguardian
 ```
 
-### 2. Create and Activate Environment
+### 2.  Build and Run with Docker Compose
 
 ```bash
-python -m venv env
-source env/bin/activate  # or `env\Scripts\activate` on Windows
+docker-compose up --build
 ```
+This will:
+
+- Build the Django app
+
+- Set up PostgreSQL
+
+- Run migrations
+ 
+- Start the server on http://localhost:8000
 
 
-### 3. Install Dependencies
+
+
+### 3. Create Superuser
 
 ```bash
-pip install -r requirements.txt
+docker exec web python manage.py createsuperuser
 ```
 
-### 4. Run Migrations
+### 4.  Access the Application
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
+Once running, open your browser and go to:
 
-### 5. Run Migrations
+- Main Dashboard: http://localhost:8000
+- Admin Panel: http://localhost:8000/admin
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
 
 
 ## 📈 Performance

@@ -1,4 +1,4 @@
-# capstone-http-anomaly-dashboard# 🔐 MLGuardian – AI-Powered Cyber Attack Detection System
+# 🔐 MLGuardian – AI-Powered Cyber Attack Detection System
 
 **MLGuardian** is an AI-powered live monitoring system designed to detect and classify web-based cyber attacks using HTTP logs. It leverages a fine-tuned LogBERT model to identify anomalies with a high level of accuracy and presents them through a modern, user-friendly dashboard.
 
